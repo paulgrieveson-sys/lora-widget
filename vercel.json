@@ -1,10 +1,4 @@
 {
   "version": 2,
-  "buildCommand": "",
-  "outputDirectory": "public",
-  "functions": {
-    "api/chat.js": {
-      "runtime": "edge"
-    }
-  }
+  "outputDirectory": "public"
 }
