@@ -520,11 +520,14 @@ async function ghlRequest(path, method = 'GET', body = null) {
   }
 }
 
-async function getPipelineId() {
+async function getPipelineId(callBooked = false) {
   const res = await ghlRequest(`/opportunities/pipelines?locationId=${GHL_LOCATION}`);
   if (!res || !res.pipelines) return null;
   const pipeline = res.pipelines.find(p => p.name === GHL_PIPELINE_NAME || p.name.toLowerCase().includes('lead to job'));
-  return pipeline ? { pipelineId: pipeline.id, stageId: pipeline.stages?.[0]?.id } : null;
+  if (!pipeline) return null;
+  const targetStage = callBooked ? 'appointment booked' : 'new enquiry';
+  const stage = pipeline.stages?.find(s => s.name.toLowerCase() === targetStage) || pipeline.stages?.[0];
+  return { pipelineId: pipeline.id, stageId: stage?.id };
 }
 
 async function createOrUpdateGHLContact(data) {
@@ -600,7 +603,7 @@ async function createOrUpdateGHLContact(data) {
           userId: ''
         });
         // Add to pipeline
-        const pipelineInfo = await getPipelineId();
+        const pipelineInfo = await getPipelineId(data.callBooked);
         if (pipelineInfo) {
           await ghlRequest('/opportunities/', 'POST', {
             pipelineId: pipelineInfo.pipelineId,
@@ -626,6 +629,20 @@ async function createOrUpdateGHLContact(data) {
       if (data.callBooked) updatePayload.tags = ['Lora AI', 'Call Booked'];
 
       await ghlRequest(`/contacts/${ghlContactId}`, 'PUT', updatePayload);
+      // Move pipeline stage to Appointment booked if call is booked
+      if (data.callBooked) {
+        const pipelineInfo = await getPipelineId(true);
+        if (pipelineInfo) {
+          const opps = await ghlRequest(`/opportunities/search?location_id=${GHL_LOCATION}&contactId=${ghlContactId}`);
+          const opp = opps?.opportunities?.[0];
+          if (opp) {
+            await ghlRequest(`/opportunities/${opp.id}`, 'PUT', {
+              pipelineStageId: pipelineInfo.stageId,
+              status: 'open'
+            });
+          }
+        }
+      }
       // Add updated note
       await ghlRequest(`/contacts/${ghlContactId}/notes`, 'POST', {
         body: `[UPDATE]\n${noteLines.join('\n')}`,
