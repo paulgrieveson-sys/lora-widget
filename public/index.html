@@ -466,7 +466,8 @@ QUALIFICATION FLOW (ALWAYS IN THIS ORDER):
 5. Are partitions being removed, added, or both? If yes → ask for approximate linear metres + ceiling height
 6. Are you planning new ceilings, lighting, or both?
 7. Internal fit-out level: None / Light (skirting, doors, small kitchenette) / Full (multiple rooms, kitchens, toilets, welfare areas)
-8. Will plumbing or toilets be involved?
+8. Will plumbing or toilets be involved? (commercial only — staff toilets, welfare facilities, kitchenettes)
+• IMPORTANT: You are strictly a COMMERCIAL fit-out consultant. Never reference residential features like "bathrooms", "living rooms", "bedrooms". Always use commercial language: welfare facilities, staff toilets, breakout areas, kitchenettes.
 9. Will you require full site management (we handle trades, programme, deliveries)?
 10. Finish level: Functional / Professional/Modern / High-End/Premium
 11. When are you hoping to start? (30 / 60 / 90+ days)
@@ -528,18 +529,44 @@ async function getPipelineId() {
 
 async function createOrUpdateGHLContact(data) {
   try {
+    // Build custom fields array mapping to GHL field keys
+    const customFields = [
+      { key: 'space_type', field_value: data.spaceType || '' },
+      { key: 'work_level', field_value: data.workLevel || '' },
+      { key: 'floor_area', field_value: data.floorArea || '' },
+      { key: 'partitions', field_value: data.partitions ? `${data.partitions}${data.partitionDetails ? ' — ' + data.partitionDetails : ''}` : '' },
+      { key: 'ceilings__lighting', field_value: data.ceilings || '' },
+      { key: 'fit_out_level', field_value: data.fitoutLevel || '' },
+      { key: 'plumbing', field_value: data.plumbing || '' },
+      { key: 'site_management', field_value: data.siteManagement || '' },
+      { key: 'finish_level', field_value: data.finishLevel || '' },
+      { key: 'timeline', field_value: data.timeline || '' },
+      { key: 'budget_range', field_value: data.budget || '' },
+      { key: 'decision_maker', field_value: data.decisionMaker || '' },
+      { key: 'call_date_time', field_value: data.callDateTime || '' },
+      { key: 'estimate_summary', field_value: [
+          data.spaceType ? `Space: ${data.spaceType}` : '',
+          data.workLevel ? `Work: ${data.workLevel}` : '',
+          data.floorArea ? `Area: ${data.floorArea}` : '',
+          data.finishLevel ? `Finish: ${data.finishLevel}` : '',
+          data.budget ? `Budget: ${data.budget}` : '',
+          data.timeline ? `Timeline: ${data.timeline}` : '',
+          data.standalone ? `Standalone: ${data.standalone}` : '',
+        ].filter(Boolean).join(' | ') }
+    ].filter(f => f.field_value !== '');
+
     const contactPayload = {
       locationId: GHL_LOCATION,
       firstName: data.name ? data.name.split(' ')[0] : 'Website',
-      lastName: data.name ? data.name.split(' ').slice(1).join(' ') : 'Enquiry',
+      lastName: data.name ? data.name.split(' ').slice(1).join(' ') || 'Enquiry' : 'Enquiry',
       email: data.email || undefined,
       phone: data.phone || undefined,
       source: 'Lora AI Estimator',
       tags: ['Lora AI', data.callBooked ? 'Call Booked' : 'In Progress'],
-      customFields: []
+      customFields
     };
 
-    // Build notes from collected data
+    // Build notes
     const noteLines = [
       '=== LORA AI ESTIMATE ENQUIRY ===',
       `Space Type: ${data.spaceType || 'Not provided'}`,
@@ -564,12 +591,13 @@ async function createOrUpdateGHLContact(data) {
     if (!ghlContactId) {
       // Create new contact
       const created = await ghlRequest('/contacts/', 'POST', contactPayload);
+      console.log('GHL create response:', JSON.stringify(created));
       if (created && created.contact) {
         ghlContactId = created.contact.id;
         // Add note
-        await ghlRequest('/contacts/notes', 'POST', {
-          contactId: ghlContactId,
-          body: noteLines.join('\n')
+        await ghlRequest(`/contacts/${ghlContactId}/notes`, 'POST', {
+          body: noteLines.join('\n'),
+          userId: ''
         });
         // Add to pipeline
         const pipelineInfo = await getPipelineId();
@@ -587,15 +615,12 @@ async function createOrUpdateGHLContact(data) {
         showGHLStatus('✓ Lead saved to GHL', 'success');
       }
     } else {
-      // Update existing contact
-      await ghlRequest(`/contacts/${ghlContactId}`, 'PUT', {
-        ...contactPayload,
-        tags: [...(contactPayload.tags || []), data.stage === 'complete' ? 'Qualified' : 'Updating']
-      });
+      // Update existing contact with latest data including custom fields
+      await ghlRequest(`/contacts/${ghlContactId}`, 'PUT', contactPayload);
       // Add updated note
-      await ghlRequest('/contacts/notes', 'POST', {
-        contactId: ghlContactId,
-        body: `[UPDATE]\n${noteLines.join('\n')}`
+      await ghlRequest(`/contacts/${ghlContactId}/notes`, 'POST', {
+        body: `[UPDATE]\n${noteLines.join('\n')}`,
+        userId: ''
       });
       showGHLStatus('✓ GHL updated', 'success');
     }
