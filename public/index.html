@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -615,8 +616,17 @@ async function createOrUpdateGHLContact(data) {
         showGHLStatus('✓ Lead saved to GHL', 'success');
       }
     } else {
-      // Update existing contact with latest data including custom fields
-      await ghlRequest(`/contacts/${ghlContactId}`, 'PUT', contactPayload);
+      // Update existing contact — GHL PUT only accepts specific fields
+      const updatePayload = {
+        firstName: contactPayload.firstName,
+        lastName: contactPayload.lastName,
+        customFields
+      };
+      if (data.email) updatePayload.email = data.email;
+      if (data.phone) updatePayload.phone = data.phone;
+      if (data.callBooked) updatePayload.tags = ['Lora AI', 'Call Booked'];
+
+      await ghlRequest(`/contacts/${ghlContactId}`, 'PUT', updatePayload);
       // Add updated note
       await ghlRequest(`/contacts/${ghlContactId}/notes`, 'POST', {
         body: `[UPDATE]\n${noteLines.join('\n')}`,
