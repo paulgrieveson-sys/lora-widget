@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -434,7 +433,7 @@
 // ─── CONFIG ───────────────────────────────────────────────
 const GHL_API_KEY   = 'pit-a1e98f8f-84b5-48db-918f-19aafd55ff9f';
 const GHL_LOCATION  = 'BdjHSjtmKmRyeQKIIDqe';
-const GHL_PIPELINE_NAME = 'New Lead from website estimate';
+const GHL_PIPELINE_NAME = 'Lead to Job Pipeline';
 const ANTHROPIC_MODEL = 'claude-haiku-4-5-20251001';
 const ANTHROPIC_PROXY = '/api/chat';
 
@@ -524,7 +523,7 @@ async function ghlRequest(path, method = 'GET', body = null) {
 async function getPipelineId() {
   const res = await ghlRequest(`/opportunities/pipelines?locationId=${GHL_LOCATION}`);
   if (!res || !res.pipelines) return null;
-  const pipeline = res.pipelines.find(p => p.name.toLowerCase().includes('estimate') || p.name === GHL_PIPELINE_NAME);
+  const pipeline = res.pipelines.find(p => p.name === GHL_PIPELINE_NAME || p.name.toLowerCase().includes('lead to job'));
   return pipeline ? { pipelineId: pipeline.id, stageId: pipeline.stages?.[0]?.id } : null;
 }
 
