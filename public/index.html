@@ -692,7 +692,7 @@ async function createOrUpdateGHLContact(data) {
       email: data.email || undefined,
       phone: data.phone || undefined,
       source: 'Lora AI Estimator',
-      tags: ['Lora AI', data.callBooked ? 'Call Booked' : 'In Progress'],
+      tags: ['lora ai', data.callBooked ? 'call booked' : 'in progress'],
       customFields
     };
 
@@ -753,7 +753,7 @@ async function createOrUpdateGHLContact(data) {
       };
       if (data.email) updatePayload.email = data.email;
       if (data.phone) updatePayload.phone = data.phone;
-      if (data.callBooked) updatePayload.tags = ['Lora AI', 'Call Booked'];
+      if (data.callBooked) updatePayload.tags = ['lora ai', 'call booked'];
 
       await ghlRequest(`/contacts/${ghlContactId}`, 'PUT', updatePayload);
       // Move pipeline stage to Appointment booked if call is booked
