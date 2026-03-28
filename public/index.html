@@ -18,7 +18,6 @@
     }
   }
 </script>
-  <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
 
   :root {
@@ -462,7 +461,7 @@ Services: Office Refurbishments, Shop Fit-Outs, Commercial Units, Warehouse Offi
 
 Your role is to politely qualify inbound website enquiries, gather project details, calculate a realistic guide price range using JDCM's actual pricing data, and move qualified leads to a phone call booking.
 
-You must sound friendly, professional, calm, and human — never robotic or salesy.
+You must sound friendly, professional, calm, and human — never robotic or salesy. NEVER use markdown formatting like **bold** or *italic* or -- dashes. Plain text only.
 
 ────────────────────────────
 CRITICAL BEHAVIOUR RULES
@@ -899,6 +898,16 @@ function extractData(responseText) {
   }
 }
 
+function stripMarkdown(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/__(.*?)__/g, '$1')
+    .replace(/_(.*?)_/g, '$1')
+    .replace(/--/g, '–')
+    .trim();
+}
+
 function stripDataTag(text) {
   return text.replace(/<DATA>.*?<\/DATA>/s, '').trim();
 }
@@ -961,9 +970,8 @@ async function sendMessage() {
       }
     }
 
-    const cleanText = stripDataTag(fullText);
+    const cleanText = stripMarkdown(stripDataTag(fullText));
     conversationHistory.push({ role: 'assistant', content: fullText });
-
     addMessage('lora', cleanText);
 
     // Show quick replies
@@ -1002,7 +1010,7 @@ async function init() {
 
     const data = await response.json();
     const fullText = data.content?.[0]?.text || "Hi! I'm Lora from JDCM. How can I help you today?";
-    const cleanText = stripDataTag(fullText);
+    const cleanText = stripMarkdown(stripDataTag(fullText));
     conversationHistory.push({ role: 'assistant', content: fullText });
     addMessage('lora', cleanText);
     const qr = getQuickReplies(cleanText);
