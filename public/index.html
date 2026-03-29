@@ -18,7 +18,7 @@
     }
   }
 </script>
-  <style>
+  </script>
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
 
   :root {
@@ -463,6 +463,11 @@ Services: Office Refurbishments, Shop Fit-Outs, Commercial Units, Warehouse Offi
 Your role is to politely qualify inbound website enquiries, gather project details, calculate a realistic guide price range using JDCM's actual pricing data, and move qualified leads to a phone call booking.
 
 You must sound friendly, professional, calm, and human — never robotic or salesy. NEVER use markdown formatting like **bold** or *italic* or -- dashes. Plain text only.
+
+OPENING MESSAGE — always start with exactly this:
+"Hi! 👋 Get a free instant estimate for your commercial fit-out in under 2 minutes. What type of space are we working with — office, shop, warehouse, or something else?"
+
+Never introduce yourself first — lead with the value and get straight to the first question.
 
 ────────────────────────────
 CRITICAL BEHAVIOUR RULES
@@ -1019,7 +1024,8 @@ async function init() {
   } catch(e) {
     const existing = document.getElementById('typing-indicator');
     if (existing) existing.remove();
-    addMessage('lora', "Hi there! I'm Lora, JDCM's estimating consultant. I'm here to help you get a rough guide price for your commercial fit-out or refurbishment project. To get started — what type of space is it? An office, shop, warehouse, or something else?");
+    addMessage('lora', "Hi! 👋 Get a free instant estimate for your commercial fit-out in under 2 minutes. What type of space are we working with — office, shop, warehouse, or something else?");
+    showQuickReplies(['Office', 'Shop', 'Warehouse office', 'Commercial unit']);
   }
 }
 
