@@ -14,19 +14,14 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  const { jobName, location, stage, additionalNotes } = req.body;
+  const { noteBody } = req.body;
 
-  if (!jobName || !location || !stage) {
-    return res.status(400).json({ error: 'Missing required fields: jobName, location, stage' });
+  if (!noteBody) {
+    return res.status(400).json({ error: 'Missing required field: noteBody' });
   }
 
-  const stageDescriptions = {
-    'rip-out': 'stripping out the existing fitout and preparing the space',
-    'midway': 'mid-way through the installation with structural and first-fix work visible',
-    'completed': 'fully completed and handed over to the client'
-  };
-
-  const stageContext = stageDescriptions[stage] || stage;
+  // Strip the GBP: prefix if present
+  const cleanNote = noteBody.replace(/^GBP:\s*/i, '').trim();
 
   const systemPrompt = `You are a copywriter specialising in commercial construction and shopfitting in the UK. 
 You write Google Business Profile posts for JDCM Ltd, a commercial shopfitting and interiors company based in Bolton, Greater Manchester.
@@ -44,16 +39,16 @@ Your posts must:
 - No hashtags
 - No emojis
 
-Tone: Professional, confident, trade-credible. Like a skilled contractor proud of their work.`;
+Tone: Professional, confident, trade-credible. Like a skilled contractor proud of their work.
 
-  const userPrompt = `Write a Google Business Profile post for JDCM Ltd with these details:
+The note format is: Job Name | Location | Stage | Additional Notes
+Stages mean: rip-out = stripping out existing fitout, midway = mid-way through installation, completed = fully finished and handed over.`;
 
-Job Name: ${jobName}
-Location: ${location}
-Stage: ${stage} (${stageContext})
-${additionalNotes ? `Additional notes: ${additionalNotes}` : ''}
+  const userPrompt = `Write a Google Business Profile post for JDCM Ltd based on this project note:
 
-Write the post now.`;
+${cleanNote}
+
+Extract the job name, location, stage and any additional notes from the text above, then write the post.`;
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -85,9 +80,7 @@ Write the post now.`;
     return res.status(200).json({
       success: true,
       post: postCopy,
-      jobName,
-      location,
-      stage
+      noteBody: cleanNote
     });
 
   } catch (error) {
