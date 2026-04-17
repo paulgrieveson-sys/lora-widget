@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   console.log('Full request body:', JSON.stringify(req.body));
   console.log('Available keys:', Object.keys(req.body || {}));
 
-  const { noteBody } = req.body;
+  const noteBody = req.body?.note?.body;
 
   if (!noteBody) {
     console.log('noteBody missing — full body was:', JSON.stringify(req.body));
