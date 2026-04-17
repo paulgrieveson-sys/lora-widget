@@ -11,10 +11,19 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
+  // Debug — log exactly what GHL sends
+  console.log('Full request body:', JSON.stringify(req.body));
+  console.log('Available keys:', Object.keys(req.body || {}));
+
   const { noteBody } = req.body;
 
   if (!noteBody) {
-    return res.status(400).json({ error: 'Missing required field: noteBody' });
+    console.log('noteBody missing — full body was:', JSON.stringify(req.body));
+    return res.status(400).json({ 
+      error: 'Missing required field: noteBody', 
+      received: req.body,
+      keys: Object.keys(req.body || {})
+    });
   }
 
   const cleanNote = noteBody.replace(/^GBP:\s*/i, '').trim();
@@ -47,7 +56,6 @@ ${cleanNote}
 Extract the job name, location, stage and any additional notes from the text above, then write the post.`;
 
   try {
-    // Generate post copy with Claude
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
