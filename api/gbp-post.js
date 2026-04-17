@@ -1,15 +1,12 @@
 export default async function handler(req, res) {
-  // Only allow POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Handle preflight
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -20,7 +17,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing required field: noteBody' });
   }
 
-  // Strip the GBP: prefix if present
   const cleanNote = noteBody.replace(/^GBP:\s*/i, '').trim();
 
   const systemPrompt = `You are a copywriter specialising in commercial construction and shopfitting in the UK. 
@@ -51,6 +47,7 @@ ${cleanNote}
 Extract the job name, location, stage and any additional notes from the text above, then write the post.`;
 
   try {
+    // Generate post copy with Claude
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -77,7 +74,7 @@ Extract the job name, location, stage and any additional notes from the text abo
 
     const postCopy = data.content?.[0]?.text || 'Failed to generate post copy.';
 
-    // Send SMS via GHL API
+    // Send SMS to Paul via GHL API
     const smsBody = `GBP Post Ready ✅\n\n${postCopy}\n\nCopy into GBP 👆`;
 
     await fetch('https://services.leadconnectorhq.com/conversations/messages', {
@@ -90,8 +87,7 @@ Extract the job name, location, stage and any additional notes from the text abo
       body: JSON.stringify({
         type: 'SMS',
         locationId: process.env.GHL_LOCATION_ID,
-        contactId: req.body.contactId || null,
-        toNumber: process.env.NOTIFY_PHONE,
+        contactId: process.env.PAUL_CONTACT_ID,
         message: smsBody
       })
     });
