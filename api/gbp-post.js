@@ -77,6 +77,25 @@ Extract the job name, location, stage and any additional notes from the text abo
 
     const postCopy = data.content?.[0]?.text || 'Failed to generate post copy.';
 
+    // Send SMS via GHL API
+    const smsBody = `GBP Post Ready ✅\n\n${postCopy}\n\nCopy into GBP 👆`;
+
+    await fetch('https://services.leadconnectorhq.com/conversations/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.GHL_API_KEY}`,
+        'Version': '2021-04-15'
+      },
+      body: JSON.stringify({
+        type: 'SMS',
+        locationId: process.env.GHL_LOCATION_ID,
+        contactId: req.body.contactId || null,
+        toNumber: process.env.NOTIFY_PHONE,
+        message: smsBody
+      })
+    });
+
     return res.status(200).json({
       success: true,
       post: postCopy,
