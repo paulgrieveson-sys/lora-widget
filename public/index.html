@@ -11,16 +11,14 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-VCPZ2RCL03');
-
   function trackEvent(name, params = {}) {
     if (typeof gtag !== 'undefined') {
       gtag('event', name, params);
     }
   }
 </script>
-  <style>
+<style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
-
   :root {
     --bg: #0e0e0e;
     --surface: #171717;
@@ -36,9 +34,7 @@
     --radius: 16px;
     --radius-sm: 10px;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
     background: var(--bg);
     font-family: 'DM Sans', sans-serif;
@@ -49,8 +45,6 @@
     justify-content: center;
     padding: 20px;
   }
-
-  /* Subtle background texture */
   body::before {
     content: '';
     position: fixed;
@@ -59,7 +53,6 @@
                 radial-gradient(ellipse at 80% 80%, rgba(200,169,110,0.03) 0%, transparent 50%);
     pointer-events: none;
   }
-
   .widget {
     width: 100%;
     max-width: 480px;
@@ -73,8 +66,6 @@
     height: 700px;
     position: relative;
   }
-
-  /* Header */
   .header {
     padding: 20px 24px 18px;
     background: var(--surface);
@@ -85,7 +76,6 @@
     flex-shrink: 0;
     position: relative;
   }
-
   .header::after {
     content: '';
     position: absolute;
@@ -93,7 +83,6 @@
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(200,169,110,0.3), transparent);
   }
-
   .avatar {
     width: 44px;
     height: 44px;
@@ -109,7 +98,6 @@
     flex-shrink: 0;
     box-shadow: 0 0 0 3px rgba(200,169,110,0.15);
   }
-
   .header-info h2 {
     font-family: 'DM Serif Display', serif;
     font-size: 17px;
@@ -117,7 +105,6 @@
     font-weight: 400;
     letter-spacing: 0.01em;
   }
-
   .header-info p {
     font-size: 12px;
     color: var(--accent);
@@ -126,7 +113,6 @@
     text-transform: uppercase;
     margin-top: 2px;
   }
-
   .status-dot {
     width: 7px;
     height: 7px;
@@ -136,27 +122,21 @@
     box-shadow: 0 0 8px rgba(74,222,128,0.5);
     animation: pulse 2s infinite;
   }
-
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
   }
-
-  /* Progress bar */
   .progress-bar {
     height: 2px;
     background: var(--border);
     flex-shrink: 0;
   }
-
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--accent), var(--accent2));
     transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
     width: 0%;
   }
-
-  /* Messages */
   .messages {
     flex: 1;
     overflow-y: auto;
@@ -166,11 +146,9 @@
     gap: 12px;
     scroll-behavior: smooth;
   }
-
   .messages::-webkit-scrollbar { width: 4px; }
   .messages::-webkit-scrollbar-track { background: transparent; }
   .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
   .msg {
     display: flex;
     gap: 10px;
@@ -178,14 +156,11 @@
     animation: fadeUp 0.3s ease forwards;
     opacity: 0;
   }
-
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-
   .msg.user { flex-direction: row-reverse; }
-
   .msg-avatar {
     width: 28px;
     height: 28px;
@@ -199,7 +174,6 @@
     color: #0e0e0e;
     flex-shrink: 0;
   }
-
   .bubble {
     max-width: 82%;
     padding: 12px 16px;
@@ -208,29 +182,24 @@
     line-height: 1.6;
     position: relative;
   }
-
   .msg.lora .bubble {
     background: var(--lora-bubble);
     border: 1px solid var(--border);
     border-bottom-left-radius: 4px;
     color: var(--text);
   }
-
   .msg.user .bubble {
     background: var(--user-bubble);
     border: 1px solid rgba(74,222,128,0.15);
     border-bottom-right-radius: 4px;
     color: var(--user-text);
   }
-
-  /* Typing indicator */
   .typing {
     display: flex;
     gap: 4px;
     align-items: center;
     padding: 14px 16px;
   }
-
   .typing span {
     width: 6px;
     height: 6px;
@@ -239,16 +208,12 @@
     animation: bounce 1.2s infinite;
     opacity: 0.6;
   }
-
   .typing span:nth-child(2) { animation-delay: 0.2s; }
   .typing span:nth-child(3) { animation-delay: 0.4s; }
-
   @keyframes bounce {
     0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
     30% { transform: translateY(-5px); opacity: 1; }
   }
-
-  /* Quick replies */
   .quick-replies {
     padding: 8px 16px 4px;
     display: flex;
@@ -256,7 +221,6 @@
     gap: 8px;
     flex-shrink: 0;
   }
-
   .qr-btn {
     background: transparent;
     border: 1px solid var(--border);
@@ -269,14 +233,11 @@
     transition: all 0.2s;
     white-space: nowrap;
   }
-
   .qr-btn:hover {
     border-color: var(--accent);
     color: var(--accent);
     background: rgba(200,169,110,0.06);
   }
-
-  /* Input area */
   .input-area {
     padding: 12px 16px 16px;
     border-top: 1px solid var(--border);
@@ -286,7 +247,6 @@
     flex-shrink: 0;
     background: var(--surface);
   }
-
   .input-wrap {
     flex: 1;
     background: var(--surface2);
@@ -295,11 +255,9 @@
     padding: 10px 14px;
     transition: border-color 0.2s;
   }
-
   .input-wrap:focus-within {
     border-color: rgba(200,169,110,0.4);
   }
-
   #user-input {
     background: transparent;
     border: none;
@@ -312,9 +270,7 @@
     max-height: 100px;
     line-height: 1.5;
   }
-
   #user-input::placeholder { color: var(--text-muted); }
-
   .send-btn {
     width: 42px;
     height: 42px;
@@ -328,58 +284,10 @@
     flex-shrink: 0;
     transition: opacity 0.2s, transform 0.1s;
   }
-
   .send-btn:hover { opacity: 0.9; transform: scale(1.02); }
   .send-btn:active { transform: scale(0.97); }
   .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
   .send-btn svg { color: #0e0e0e; }
-
-  /* Summary card */
-  .summary-card {
-    background: var(--surface2);
-    border: 1px solid rgba(200,169,110,0.2);
-    border-radius: var(--radius-sm);
-    padding: 14px;
-    margin-top: 6px;
-    font-size: 13px;
-    line-height: 1.7;
-  }
-
-  .summary-card .label {
-    color: var(--accent);
-    font-weight: 600;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 8px;
-  }
-
-  .summary-card .row {
-    display: flex;
-    justify-content: space-between;
-    padding: 4px 0;
-    border-bottom: 1px solid var(--border);
-    color: var(--text-muted);
-  }
-
-  .summary-card .row:last-child { border-bottom: none; }
-  .summary-card .row span:last-child { color: var(--text); font-weight: 500; text-align: right; max-width: 60%; }
-
-  .price-range {
-    background: linear-gradient(135deg, rgba(200,169,110,0.12), rgba(200,169,110,0.06));
-    border: 1px solid rgba(200,169,110,0.25);
-    border-radius: var(--radius-sm);
-    padding: 14px;
-    margin-top: 8px;
-    text-align: center;
-  }
-
-  .price-range .label { color: var(--accent); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
-  .price-range .amount { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--text); margin: 4px 0; }
-  .price-range .note { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
-
-  /* GHL status */
   .ghl-status {
     font-size: 11px;
     color: var(--text-muted);
@@ -388,12 +296,9 @@
     opacity: 0;
     transition: opacity 0.3s;
   }
-
   .ghl-status.show { opacity: 1; }
   .ghl-status.success { color: #4ade80; }
   .ghl-status.error { color: #f87171; }
-
-  /* Branding */
   .branding {
     text-align: center;
     padding: 8px;
@@ -402,12 +307,10 @@
     border-top: 1px solid var(--border);
     flex-shrink: 0;
   }
-
   .branding span { color: var(--accent); }
 </style>
 </head>
 <body>
-
 <div class="widget">
   <div class="header">
     <div class="avatar">L</div>
@@ -417,17 +320,12 @@
     </div>
     <div class="status-dot"></div>
   </div>
-
   <div class="progress-bar">
     <div class="progress-fill" id="progress"></div>
   </div>
-
   <div class="messages" id="messages"></div>
-
   <div class="quick-replies" id="quick-replies"></div>
-
   <div class="ghl-status" id="ghl-status"></div>
-
   <div class="input-area">
     <div class="input-wrap">
       <textarea id="user-input" rows="1" placeholder="Type your message…"></textarea>
@@ -439,8 +337,7 @@
       </svg>
     </button>
   </div>
-
-  <div class="branding">Powered by <span>JDCM</span> · AI Estimating</div>
+  <div class="branding">Powered by <span>Construction Media</span> · AI Estimating</div>
 </div>
 
 <script>
@@ -454,7 +351,7 @@ const ANTHROPIC_PROXY = '/api/chat';
 const SYSTEM_PROMPT = `You are Lora, an estimating consultant at JDCM.
 
 COMPANY:
-JDCM – Commercial Fit-Out & Refurbishment Specialists
+JDCM – Commercial Shopfitting & Interiors Specialists
 Location: Bolton, Greater Manchester & Nationwide
 Phone: 07444 839722
 Email: jason@jdcmanagement.co.uk
@@ -462,7 +359,7 @@ Services: Office Refurbishments, Shop Fit-Outs, Commercial Units, Warehouse Offi
 
 Your role is to politely qualify inbound website enquiries, gather project details, calculate a realistic guide price range using JDCM's actual pricing data, and move qualified leads to a phone call booking.
 
-You must sound friendly, professional, calm, and human — never robotic or salesy. NEVER use markdown formatting like **bold** or *italic* or -- dashes. Plain text only.
+You must sound friendly, professional, calm, and human — never robotic or salesy. NEVER use markdown formatting like **bold** or *italic* or -- dashes. Plain text only. No asterisks. No dashes used as bullet points.
 
 OPENING MESSAGE — always start with exactly this:
 "Hi! 👋 Get a free instant estimate for your commercial fit-out in under 2 minutes. What type of space are we working with — office, shop, warehouse, or something else?"
@@ -472,159 +369,241 @@ Never introduce yourself first — lead with the value and get straight to the f
 ────────────────────────────
 CRITICAL BEHAVIOUR RULES
 ────────────────────────────
-• Ask ONE question at a time
-• Remember all answers already given
-• Never repeat questions already answered
-• Progress forward through the flow — never restart
-• Never give exact prices — only broad guide ranges calculated from the data below
-• Always move toward booking a call
-• If information is missing, politely ask for it
-• Never ask irrelevant questions
-• Always use commercial language — never residential terms
+Ask ONE question at a time
+Remember all answers already given
+Never repeat questions already answered
+Progress forward through the flow — never restart
+Never give exact prices — only broad guide ranges calculated from the data below
+Always move toward booking a call
+If information is missing, politely ask for it
+Never ask irrelevant questions
+Always use commercial language — never residential terms
+After giving the estimate, ALWAYS offer to email it — do not wait to be asked
 
 ────────────────────────────
-JDCM PRICING DATA (use this to calculate all guide ranges)
+JDCM PRICING DATA — SECTION A SUPPLY & FIT (North West base rates, excl. VAT)
 ────────────────────────────
 
 MANDATORY PRE-CONSTRUCTION:
-- R&D Survey — required before any strip-out or fabric disturbance
-- Identifies asbestos & structural risks — usually landlord responsibility
-- Typical cost: £450–£1,200 (JDCM can arrange)
-- Always mention this if strip-out is involved
+R&D Survey — required before any strip-out or fabric disturbance
+Identifies asbestos and structural risks — usually landlord responsibility
+Typical cost: £450–£1,200 (JDCM can arrange)
+Always mention this if strip-out is involved
 
 STRIP-OUT (per m²):
-- Light: £20–£35/m²
-- Partial: £35–£65/m²
-- Full: £60–£110/m²
-- Waste/Skips: £450–£1,800 additional
+Light: £20–£35/m²
+Partial: £35–£65/m²
+Full: £60–£110/m²
+Waste/Skips: £450–£1,800 additional
 
-PARTITIONS (per m², supply & fit):
-- Standard stud: £65–£85/m²
-- Acoustic: £80–£100/m²
-- Fire-rated (30 min): £110–£140/m²
-- Fire-rated (60 min): £140–£160/m²
-- Glazed framed single: £200–£380/m²
-- Glazed framed double: £300–£520/m²
-- Glazed frameless single: £380–£620/m²
-- Glazed frameless double: £520–£800/m²
+SUSPENDED & MF CEILINGS (per m², supply & fit):
+Suspended grid — standard spec: £45–£65/m²
+Suspended grid — commercial spec: £55–£75/m²
+MF / feature ceiling: £75–£110/m²
+
+STUD PARTITIONS & DRYLINING (per m², supply & fit):
+Standard stud partition: £65–£85/m²
+Acoustic stud partition: £80–£100/m²
+Fire-rated partition — 30 min: £110–£140/m²
+Fire-rated partition — 60 min: £140–£160/m²
+High spec / specialist systems: £160–£220/m²
+Note: rates are per m² (height x linear metres). Skim, decoration and ironmongery are separate.
+
+GLAZED PARTITIONS (per m², supply & fit):
+Framed aluminium — single glazed: £200–£380/m²
+Framed aluminium — double glazed: £300–£520/m²
+Frameless — single glazed: £380–£620/m²
+Frameless — double glazed: £520–£800/m²
 
 DOOR OPENINGS & ALTERATIONS (each):
-- Forming opening in new partition: £95–£260
-- Cutting opening in existing partition: £175–£440
-- Supply & fit door lining/frame: £220–£420
+Forming opening in new partition: £95–£260
+Cutting opening in existing partition: £175–£440
+Supply & fit door lining/frame: £220–£420
+IMPORTANT: Always price these separately — never absorb into day rates
 
-PENETRATIONS (each — often missed, always charge):
-- Standard (cables / small pipes): £30–£95
-- Large (ducting / wire tray / RSJ): £145–£490
-- Site visit minimum if travel required: £180–£500
+PENETRATIONS (each — always charge, never absorb):
+Standard (cables / small pipes): £30–£95 each
+Large (ducting / wire tray / RSJ): £145–£490 each
+Site visit minimum if travel required: £180–£500
+Note: A typical fit-out has 15–30 penetrations — always ask and always price
 
-CEILINGS (per m²):
-- Suspended grid — standard: £45–£65/m²
-- Suspended grid — commercial spec: £55–£75/m²
-- MF / feature ceiling: £75–£110/m²
+FLOORING (per m², supply & fit):
+Vinyl / LVT: £50–£90/m²
+Ceramic / tile: £70–£120/m²
+Carpet tiles: £35–£85/m²
+Removal: £10–£25/m²
 
-FLOORING (per m²):
-- Vinyl / LVT: £50–£90/m²
-- Ceramic / tile: £70–£120/m²
-- Carpet tiles: £35–£85/m²
-- Removal: £10–£25/m²
+DECORATION (per m², supply & fit):
+Basic repaint: £20–£40/m²
+Full prep & finish: £40–£60/m²
+Feature finishes: £20–£45/m²
 
 LIGHTING & ELECTRICS:
-- LED panels: £85–£160 each
-- Emergency lighting: £400–£1,500
-- Full rewire: £2,500–£9,000
+LED panels: £85–£160 each
+Emergency lighting: £400–£1,500
+Full rewire: £2,500–£9,000
 
 PLUMBING:
-- WC installs: £2,000–£5,500 each
-- Tea points/kitchens: £2,500–£8,000
+WC installs: £2,000–£5,500 each
+Tea points/kitchens: £2,500–£8,000
 
 JOINERY:
-- Internal doors: £350–£900 each
-- Skirting: £6–£14/lm
-- Bespoke joinery: £1,500+
+Internal doors: £350–£900 each
+Skirting: £6–£14/lm
+Bespoke joinery: £1,500+
 
-DECORATION (per m²):
-- Basic repaint: £20–£40/m²
-- Full prep & finish: £40–£60/m²
-- Feature finishes: £20–£45/m²
+SMALL WORKS & SITE MINIMUMS:
+Small works / alterations allowance: £250–£750/job
+Site visit / call-out charge: £180–£500
+Minimum charge — isolated works: £250–£500
+Always apply minimum site charge when mobilising for small or isolated works
 
-OUT OF HOURS UPLIFTS:
-- Evening / Saturday: +33% on all rates
-- Sunday: +50% on all rates
-- Bank holidays: +100% on all rates
-- Note: Retail clients almost always require out of hours —
-  mention this if project is retail/pharmacy/supermarket
+OUT OF HOURS UPLIFTS (applied on top of all base rates):
+Evening (after 6pm): +33%
+Night working (10pm–6am): +33%
+Saturday: +33%
+Sunday: +50%
+Bank holidays: +100%
+IMPORTANT: Retail clients almost always require out of hours — always mention this on retail/pharmacy/supermarket projects and include in estimate
 
-SITE MANAGEMENT:
-- 8%–15% of total project value
+STANDARD PROJECT ALLOWANCES (always include in every estimate):
+Prelims & overheads: 10–15% of subtotal
+Contractor margin: 10–15% of subtotal
+Site management: 5–12% of subtotal (if requested)
 
-TYPICAL PROJECT TOTALS (use as sanity check):
-- 50–100m²: £15k–£45k
-- 100–250m²: £40k–£100k
-- 250–500m²: £80k–£200k
+LOCATION MULTIPLIERS (apply silently to all rates):
+North West — Bolton, Manchester, Stockport, Liverpool, Preston, Wigan: 1.00x (base rate)
+Midlands — Birmingham, Nottingham, Leicester, Derby: 1.00–1.05x
+Yorkshire — Leeds, Sheffield, Bradford, Hull: 1.00–1.05x
+South — Bristol, Cardiff, Oxford, Cambridge: 1.10–1.15x
+South East — Surrey, Kent, Essex, Hertfordshire: 1.15–1.20x
+London — All zones: 1.30–1.50x (Central London at upper end)
+Scotland / Northern Ireland: 1.05–1.10x
 
-[If strip-out involved]: Worth noting — before any strip-out work begins, a Refurbishment & Demolition (R&D) Survey is required by law to identify any asbestos or structural risks. This typically costs £450–£1,200 and is usually the landlord's responsibility. JDCM can arrange this for you.
+Apply the multiplier silently — do not tell the prospect you are applying it. Just factor it into the numbers naturally.
 
-This isn't a formal quote — your actual costs will depend on exact layout, access, site conditions and final specification. But it gives you a solid planning figure.
+────────────────────────────
+QUALIFICATION FLOW (ALWAYS IN THIS ORDER)
+────────────────────────────
+1. What type of space is it? (Office / Shop / Warehouse office / Commercial unit / Other)
+2. Where is the site located? (Town or city — this affects pricing)
+3. What level of work? (Light refresh / Partial strip-out & refit / Full strip-out & full refit)
+4. Approximate floor area in m² — or give me the rough length and width and I will work it out
+5. Are partitions being removed, added, or both? If yes — ask for approximate m² and type (standard / acoustic / fire-rated / glazed)
+6. Are you planning new ceilings, lighting, or both? If ceilings — ask suspended grid or MF plasterboard
+7. Will there be any door openings or alterations to existing walls or partitions?
+8. Are there any service penetrations needed — cables, pipework, ducting going through walls or ceilings? (Roughly how many?)
+9. What type of flooring is planned — or is existing flooring being kept?
+10. Will the project require any decoration — repaint, full prep and finish, or feature finishes?
+11. Will plumbing be involved? If yes — how many WCs and/or tea points/kitchens?
+12. Is this a retail or pharmacy project? (Triggers out of hours discussion)
+13. Will you need full site management — we handle all trades, programme and deliveries?
+14. When are you hoping to start? (Within 30 days / 30–60 days / 60–90 days / 90+ days)
+15. Which budget range feels closest? (Under £25k / £25k–£60k / £60k–£120k / £120k+)
+16. Are you the main decision maker on this project?
+17. Before I put the estimate together — is there anything else we have not covered? Joinery, bespoke furniture, electrics, waste removal, anything specific?
+
+────────────────────────────
+ESTIMATE PRESENTATION
+────────────────────────────
+Once all relevant questions are answered, present the estimate clearly in this format:
+
+"Here is your guide estimate for the [space type] in [location]:
+
+[List each relevant line item]:
+Strip-out ([level], [m²]m²): £X – £Y
+Partitions ([type], [m²]m²): £X – £Y
+Ceilings ([type], [m²]m²): £X – £Y
+Flooring ([type], [m²]m²): £X – £Y
+Door openings ([number]): £X – £Y
+Penetrations ([number]): £X – £Y
+Decoration ([type], [m²]m²): £X – £Y
+Plumbing ([details]): £X – £Y
+Electrics/Lighting: £X – £Y
+Joinery: £X – £Y
+Out of hours uplift ([%] if applicable): £X – £Y
+Prelims & overheads (12%): £X – £Y
+Contractor margin (12%): £X – £Y
+Site management ([%] if requested): £X – £Y
+
+TOTAL GUIDE RANGE: £X,XXX – £X,XXX
+
+[If strip-out involved]: Worth noting — before any strip-out work begins, a Refurbishment & Demolition Survey is required by law to identify asbestos or structural risks. This typically costs £450–£1,200 and is usually the landlord's responsibility. JDCM can arrange this for you.
+
+[If retail/pharmacy]: As this is a retail project, out of hours working is almost certainly required. I have included an uplift in the estimate above — your consultant will confirm the programme on the call.
+
+This is not a formal quote — your actual costs will depend on exact layout, access, site conditions and final specification. But it gives you a solid planning figure.
 
 Would you like me to email this estimate summary to you so you have it for reference?"
 
-IMPORTANT: Always show the TOTAL GUIDE RANGE clearly at the bottom in bold. Never skip the total. Only include line items that are relevant to the project.
+IMPORTANT: Always show the TOTAL GUIDE RANGE clearly. Never skip the total. Only include line items relevant to the project. Always include prelims, overheads and margin.
 
-EMAIL ESTIMATE FLOW:
-If they say YES to receiving the estimate by email:
-→ Ask for their email address if not already collected
-→ Set estimateEmailRequested: true in the DATA tag
-→ Confirm: "Done — I'll make sure that gets sent over to you. The team at JDCM will also follow up to discuss the details. Speaking of which..."
-→ Then move straight into the booking flow
+────────────────────────────
+EMAIL ESTIMATE FLOW
+────────────────────────────
+After presenting the estimate, ALWAYS ask:
+"Would you like me to email this estimate summary to you so you have it for reference?"
+
+Do NOT wait to be asked — offer it every time automatically.
+
+If they say YES:
+Ask for their email address if not already collected
+Set estimateEmailRequested: true in the DATA tag
+Confirm: "Done — I will make sure that gets sent over to you. The team at JDCM will also follow up to discuss the details. Speaking of which..."
+Then move straight into the booking flow
 
 ────────────────────────────
 BOOKING FLOW
 ────────────────────────────
 "The best next step is a short call with one of our project consultants so they can confirm the details and advise properly. Would you like to book a quick call?"
 
-MATERIAL RECOGNITION — INTERPRET DON'T CLARIFY:
-When a lead mentions specific materials or construction methods, interpret them intelligently and factor into pricing without asking follow-up questions. The consultant will confirm details on the call.
-
-Partition materials — interpret as:
-• Metal stud / steel stud / stud wall → Standard partition (£85–£130/lm)
-• Soundblock / acoustic board / Rockwool / sound insulation → Acoustic partition (£150–£240/lm)
-• Fire board / fire rated / Fireline → Fire-rated partition (£120–£180/lm)
-• Glass / glazed / manifestation / frameless → Glazed partition (£180–£320/lm)
-• Brick / blockwork / breezeblock / structural → Note as structural work, flag for consultant, do not price as standard partition
-• If unclear → default to standard partition rate and note what was mentioned
-
-Ceiling materials — interpret as:
-• Grid / suspended / tile / mineral fibre → Suspended grid ceiling (£40–£85/m²)
-• Plasterboard / MF / skim / smooth → MF plasterboard ceiling (£70–£140/m²)
-
-Flooring materials — interpret as:
-• Carpet / carpet tiles → Carpet tiles (£35–£85/m²)
-• Vinyl / LVT / luxury vinyl / wood effect / safety floor → Vinyl/LVT (£45–£110/m²)
-
-NEVER ask the lead to clarify what they meant by a material — interpret it, use the closest matching rate, and move forward. Note anything unusual in the estimate summary for the consultant.
-
 BOOKING HOURS:
-Consultation calls are available Monday to Friday, 10am–2pm only. If a lead suggests a time outside these hours, politely let them know and suggest an available slot within 10am–2pm. Never confirm a booking outside these hours.
+Consultation calls are available Monday to Friday, 10am–2pm only.
+If a lead suggests a time outside these hours, politely let them know and suggest an available slot.
+Never confirm a booking outside these hours.
 
-If YES → Ask for preferred day and time
+If YES:
+Ask for preferred day and time
 Then ask for name, email and best contact number (one at a time)
 Then confirm:
 "One of our consultants will call you from 07444 839722 at [time/day]. If you have any plans, sketches, photos, or anything else that might be helpful, feel free to email them over to info@jdcmanagement.co.uk before the call — it just helps the conversation be even more useful. Looking forward to helping you get this project moving. Speak soon! 👍"
 
 ────────────────────────────
+MATERIAL RECOGNITION — INTERPRET DON'T CLARIFY
+────────────────────────────
+When a lead mentions specific materials, interpret intelligently and factor into pricing without asking follow-up questions.
+
+Partition materials:
+Metal stud / steel stud / stud wall → Standard partition £65–£85/m²
+Soundblock / acoustic board / Rockwool → Acoustic partition £80–£100/m²
+Fire board / fire rated / Fireline → Fire-rated partition £110–£160/m²
+Glass / glazed / manifestation / frameless → Glazed partition £200–£800/m²
+Brick / blockwork / breezeblock → Note as structural work, flag for consultant
+
+Ceiling materials:
+Grid / suspended / tile / mineral fibre → Suspended grid £45–£75/m²
+Plasterboard / MF / skim / smooth → MF plasterboard £75–£110/m²
+
+Flooring materials:
+Carpet / carpet tiles → Carpet tiles £35–£85/m²
+Vinyl / LVT / luxury vinyl / wood effect → Vinyl/LVT £50–£90/m²
+
+NEVER ask the lead to clarify materials — interpret, price and move forward.
+
+────────────────────────────
 UNDER-BUDGET SOFT FILTER
 ────────────────────────────
 If calculated estimate clearly exceeds stated budget:
-"Based on the scope you've described, your budget may be a little tight — but it's absolutely worth a quick chat. There may be ways we can phase the work or adjust the spec to make something workable within your budget. Would you like to speak with one of our consultants?"
+"Based on the scope you have described, your budget may be a little tight — but it is absolutely worth a quick chat. There may be ways we can phase the work or adjust the spec to make something workable within your budget. Would you like to speak with one of our consultants?"
 
 ────────────────────────────
 IMPORTANT INSTRUCTION FOR DATA EXTRACTION
 ────────────────────────────
-After EVERY response you give, append a JSON block at the very end (after a line break) in this exact format — update it with any new information gathered:
-<DATA>{"spaceType":"","standalone":"","workLevel":"","floorArea":"","partitions":"","partitionDetails":"","ceilings":"","fitoutLevel":"","plumbing":"","siteManagement":"","finishLevel":"","timeline":"","budget":"","decisionMaker":"","estimateEmailRequested":false,"name":"","email":"","phone":"","callBooked":false,"callDateTime":"","stage":"qualifying"}</DATA>
+After EVERY response, append a JSON block at the very end:
+<DATA>{"spaceType":"","location":"","locationMultiplier":1.0,"workLevel":"","floorArea":"","partitions":"","partitionDetails":"","ceilings":"","doorOpenings":"","penetrations":"","flooring":"","decoration":"","fitoutLevel":"","plumbing":"","isRetail":false,"outOfHours":false,"siteManagement":"","timeline":"","budget":"","decisionMaker":"","estimateEmailRequested":false,"name":"","email":"","phone":"","callBooked":false,"callDateTime":"","stage":"qualifying"}</DATA>
 
-Only include fields that have been answered. stage should be: "qualifying", "pricing", "booking", or "complete".`;
+Only include fields that have been answered. locationMultiplier should reflect the region detected. stage should be: "qualifying", "pricing", "booking", or "complete".`;
+
 // ──────────────────────────────────────────────────────────
 
 // ─── LOCALSTORAGE MEMORY ──────────────────────────────────
@@ -647,7 +626,6 @@ function loadSession() {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (!saved) return null;
     const session = JSON.parse(saved);
-    // Only restore sessions less than 24 hours old
     if (Date.now() - session.savedAt > 24 * 60 * 60 * 1000) {
       localStorage.removeItem(STORAGE_KEY);
       return null;
@@ -665,7 +643,7 @@ function buildTranscript() {
     .filter(m => m.role !== 'system')
     .map(m => {
       const role = m.role === 'user' ? 'Visitor' : 'Lora';
-      const content = typeof m.content === 'string' 
+      const content = typeof m.content === 'string'
         ? m.content.replace(/<DATA>.*?<\/DATA>/s, '').trim()
         : '';
       return `${role}: ${content}`;
@@ -677,7 +655,7 @@ function buildTranscript() {
 let conversationHistory = [];
 let collectedData = {};
 let ghlContactId = null;
-let totalQuestions = 13;
+let totalQuestions = 17;
 let questionsAnswered = 0;
 
 // ─── GHL FUNCTIONS ────────────────────────────────────────
@@ -713,7 +691,6 @@ async function getPipelineId(callBooked = false) {
 
 async function createOrUpdateGHLContact(data) {
   try {
-    // Build custom fields array mapping to GHL field keys
     const customFields = [
       { key: 'space_type', field_value: data.spaceType || '' },
       { key: 'work_level', field_value: data.workLevel || '' },
@@ -723,19 +700,22 @@ async function createOrUpdateGHLContact(data) {
       { key: 'fit_out_level', field_value: data.fitoutLevel || '' },
       { key: 'plumbing', field_value: data.plumbing || '' },
       { key: 'site_management', field_value: data.siteManagement || '' },
-      { key: 'finish_level', field_value: data.finishLevel || '' },
+      { key: 'finish_level', field_value: data.decoration || '' },
       { key: 'timeline', field_value: data.timeline || '' },
       { key: 'budget_range', field_value: data.budget || '' },
       { key: 'decision_maker', field_value: data.decisionMaker || '' },
       { key: 'call_date_time', field_value: data.callDateTime || '' },
       { key: 'estimate_summary', field_value: [
           data.spaceType ? `Space: ${data.spaceType}` : '',
+          data.location ? `Location: ${data.location}` : '',
+          data.locationMultiplier && data.locationMultiplier !== 1.0 ? `Location Multiplier: ${data.locationMultiplier}x` : '',
           data.workLevel ? `Work: ${data.workLevel}` : '',
           data.floorArea ? `Area: ${data.floorArea}` : '',
-          data.finishLevel ? `Finish: ${data.finishLevel}` : '',
           data.budget ? `Budget: ${data.budget}` : '',
           data.timeline ? `Timeline: ${data.timeline}` : '',
-          data.standalone ? `Standalone: ${data.standalone}` : '',
+          data.isRetail ? 'Retail project — out of hours required' : '',
+          data.penetrations ? `Penetrations: ${data.penetrations}` : '',
+          data.doorOpenings ? `Door openings: ${data.doorOpenings}` : '',
         ].filter(Boolean).join(' | ') }
     ].filter(f => f.field_value !== '');
 
@@ -750,20 +730,26 @@ async function createOrUpdateGHLContact(data) {
       customFields
     };
 
-    // Build notes with full transcript
     const transcript = buildTranscript();
     const noteLines = [
       '=== LORA AI ESTIMATE ENQUIRY ===',
       `Space Type: ${data.spaceType || 'Not provided'}`,
+      `Location: ${data.location || 'Not provided'}`,
+      `Location Multiplier: ${data.locationMultiplier || '1.0'}x`,
       `Work Level: ${data.workLevel || 'Not provided'}`,
       `Floor Area: ${data.floorArea || 'Not provided'}`,
       `Partitions: ${data.partitions || 'Not provided'}`,
       `Partition Details: ${data.partitionDetails || 'Not provided'}`,
       `Ceilings/Lighting: ${data.ceilings || 'Not provided'}`,
+      `Door Openings: ${data.doorOpenings || 'Not provided'}`,
+      `Penetrations: ${data.penetrations || 'Not provided'}`,
+      `Flooring: ${data.flooring || 'Not provided'}`,
+      `Decoration: ${data.decoration || 'Not provided'}`,
       `Fit-Out Level: ${data.fitoutLevel || 'Not provided'}`,
       `Plumbing: ${data.plumbing || 'Not provided'}`,
+      `Retail Project: ${data.isRetail ? 'YES — out of hours required' : 'No'}`,
+      `Out of Hours: ${data.outOfHours ? 'YES' : 'No'}`,
       `Site Management: ${data.siteManagement || 'Not provided'}`,
-      `Finish Level: ${data.finishLevel || 'Not provided'}`,
       `Timeline: ${data.timeline || 'Not provided'}`,
       `Budget Range: ${data.budget || 'Not provided'}`,
       `Decision Maker: ${data.decisionMaker || 'Not provided'}`,
@@ -778,23 +764,19 @@ async function createOrUpdateGHLContact(data) {
     ];
 
     if (!ghlContactId) {
-      // Create new contact
       const created = await ghlRequest('/contacts/', 'POST', contactPayload);
-      console.log('GHL create response:', JSON.stringify(created));
       if (created && created.contact) {
         ghlContactId = created.contact.id;
-        // Add note
         await ghlRequest(`/contacts/${ghlContactId}/notes`, 'POST', {
           body: noteLines.join('\n'),
           userId: ''
         });
-        // Add to pipeline
         const pipelineInfo = await getPipelineId(data.callBooked);
         if (pipelineInfo) {
           await ghlRequest('/opportunities/', 'POST', {
             pipelineId: pipelineInfo.pipelineId,
             locationId: GHL_LOCATION,
-            name: `${data.spaceType || 'Commercial'} Fit-Out Enquiry`,
+            name: `${data.spaceType || 'Commercial'} Fit-Out — ${data.location || 'Location TBC'}`,
             pipelineStageId: pipelineInfo.stageId,
             status: 'open',
             contactId: ghlContactId,
@@ -804,7 +786,6 @@ async function createOrUpdateGHLContact(data) {
         showGHLStatus('✓ Lead saved to GHL', 'success');
       }
     } else {
-      // Update existing contact — GHL PUT only accepts specific fields
       const updatePayload = {
         firstName: contactPayload.firstName,
         lastName: contactPayload.lastName,
@@ -813,9 +794,7 @@ async function createOrUpdateGHLContact(data) {
       if (data.email) updatePayload.email = data.email;
       if (data.phone) updatePayload.phone = data.phone;
       if (data.callBooked) updatePayload.tags = ['lora ai', 'call booked'];
-
       await ghlRequest(`/contacts/${ghlContactId}`, 'PUT', updatePayload);
-      // Move pipeline stage to Appointment booked if call is booked
       if (data.callBooked) {
         const pipelineInfo = await getPipelineId(true);
         if (pipelineInfo) {
@@ -829,7 +808,6 @@ async function createOrUpdateGHLContact(data) {
           }
         }
       }
-      // Add updated note
       await ghlRequest(`/contacts/${ghlContactId}/notes`, 'POST', {
         body: `[UPDATE]\n${noteLines.join('\n')}`,
         userId: ''
@@ -854,21 +832,25 @@ function showGHLStatus(msg, type) {
   setTimeout(() => { el.className = 'ghl-status'; }, 3000);
 }
 
-// ─── QUICK REPLY SUGGESTIONS ──────────────────────────────
+// ─── QUICK REPLIES ────────────────────────────────────────
 function getQuickReplies(lastMessage) {
   const msg = lastMessage.toLowerCase();
-  if (msg.includes('type of space')) return ['Office', 'Shop', 'Warehouse office', 'Commercial unit'];
-  if (msg.includes('standalone')) return ['Standalone building', 'Part of a complex'];
+  if (msg.includes('type of space')) return ['Office', 'Shop / Retail', 'Warehouse office', 'Commercial unit'];
+  if (msg.includes('located') || msg.includes('location') || msg.includes('site')) return ['Manchester', 'Bolton', 'London', 'Birmingham'];
   if (msg.includes('level of work')) return ['Light refresh', 'Partial strip-out & refit', 'Full strip-out & refit'];
   if (msg.includes('partition')) return ['Remove only', 'Add only', 'Both', 'No partitions'];
-  if (msg.includes('ceiling') || msg.includes('lighting')) return ['New ceilings', 'New lighting', 'Both', 'Neither'];
-  if (msg.includes('fit-out level')) return ['None', 'Light', 'Full'];
+  if (msg.includes('ceiling') || msg.includes('lighting')) return ['Suspended grid', 'MF plasterboard', 'Both', 'Neither'];
+  if (msg.includes('door opening') || msg.includes('alterations')) return ['Yes', 'No', 'Not sure yet'];
+  if (msg.includes('penetration')) return ['None', '1–5', '6–15', '15–30', '30+'];
+  if (msg.includes('flooring')) return ['Vinyl / LVT', 'Carpet tiles', 'Ceramic / tile', 'Keep existing'];
+  if (msg.includes('decoration')) return ['Basic repaint', 'Full prep & finish', 'Feature finishes', 'No decoration'];
   if (msg.includes('plumbing') || msg.includes('toilet')) return ['Yes', 'No', 'Not sure yet'];
+  if (msg.includes('retail') || msg.includes('pharmacy')) return ['Yes retail', 'No — office / commercial'];
   if (msg.includes('site management')) return ['Yes please', 'No, we have trades', 'Not sure yet'];
-  if (msg.includes('finish level')) return ['Functional', 'Professional / Modern', 'High-End / Premium'];
   if (msg.includes('hoping to start')) return ['Within 30 days', '30–60 days', '60–90 days', '90+ days'];
   if (msg.includes('budget range')) return ['Under £25k', '£25k–£60k', '£60k–£120k', '£120k+'];
-  if (msg.includes('decision maker')) return ['Yes, I am', 'No, I\'ll need sign-off', 'Joint decision'];
+  if (msg.includes('decision maker')) return ['Yes, I am', 'No, need sign-off', 'Joint decision'];
+  if (msg.includes('email this estimate') || msg.includes('email it') || msg.includes('send it')) return ['Yes please', 'No thanks'];
   if (msg.includes('book a') || msg.includes('quick call')) return ['Yes, book a call', 'Not right now'];
   return [];
 }
@@ -889,10 +871,8 @@ function showQuickReplies(replies) {
 }
 
 // ─── CHAT FUNCTIONS ───────────────────────────────────────
-
 function addMessage(role, text, isHtml = false) {
   const container = document.getElementById('messages');
-
   if (role === 'typing') {
     const div = document.createElement('div');
     div.className = 'msg lora';
@@ -906,20 +886,16 @@ function addMessage(role, text, isHtml = false) {
     container.scrollTop = container.scrollHeight;
     return;
   }
-
   const existing = document.getElementById('typing-indicator');
   if (existing) existing.remove();
-
   const div = document.createElement('div');
   div.className = `msg ${role}`;
-
   let inner = '';
   if (role === 'lora') {
     inner = `<div class="msg-avatar">L</div><div class="bubble">${isHtml ? text : escapeHtml(text)}</div>`;
   } else {
     inner = `<div class="bubble">${escapeHtml(text)}</div>`;
   }
-
   div.innerHTML = inner;
   container.appendChild(div);
   container.scrollTop = container.scrollHeight;
@@ -937,11 +913,7 @@ function updateProgress() {
 function extractData(responseText) {
   const match = responseText.match(/<DATA>(.*?)<\/DATA>/s);
   if (!match) return null;
-  try {
-    return JSON.parse(match[1]);
-  } catch(e) {
-    return null;
-  }
+  try { return JSON.parse(match[1]); } catch(e) { return null; }
 }
 
 function stripMarkdown(text) {
@@ -959,9 +931,10 @@ function stripDataTag(text) {
 }
 
 function countAnswered(data) {
-  const fields = ['spaceType','standalone','workLevel','floorArea','partitions','ceilings',
-    'fitoutLevel','plumbing','siteManagement','finishLevel','timeline','budget','decisionMaker'];
-  return fields.filter(f => data[f] && data[f].length > 0).length;
+  const fields = ['spaceType','location','workLevel','floorArea','partitions','ceilings',
+    'doorOpenings','penetrations','flooring','decoration','plumbing','siteManagement',
+    'timeline','budget','decisionMaker','fitoutLevel','isRetail'];
+  return fields.filter(f => data[f] !== undefined && data[f] !== '' && data[f] !== false).length;
 }
 
 async function sendMessage() {
@@ -969,7 +942,6 @@ async function sendMessage() {
   const text = input.value.trim();
   if (!text) return;
 
-  // Handle start fresh
   if (text.toLowerCase() === 'start fresh') {
     clearSession();
     conversationHistory = [];
@@ -991,7 +963,6 @@ async function sendMessage() {
   addMessage('user', text);
   conversationHistory.push({ role: 'user', content: text });
 
-  // Track first message
   if (conversationHistory.filter(m => m.role === 'user').length === 2) {
     trackEvent('lora_engaged');
   }
@@ -1004,7 +975,7 @@ async function sendMessage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: ANTHROPIC_MODEL,
-        max_tokens: 1000,
+        max_tokens: 1200,
         system: SYSTEM_PROMPT,
         messages: conversationHistory
       })
@@ -1013,18 +984,15 @@ async function sendMessage() {
     const data = await response.json();
     const fullText = data.content?.[0]?.text || "I'm sorry, I had a technical issue. Please try again.";
 
-    // Extract structured data
     const extracted = extractData(fullText);
     if (extracted) {
       collectedData = { ...collectedData, ...Object.fromEntries(Object.entries(extracted).filter(([,v]) => v !== '' && v !== false)) };
       questionsAnswered = countAnswered(collectedData);
       updateProgress();
 
-      // Track key stages
-      if (extracted.stage === 'pricing') trackEvent('lora_qualified', { spaceType: collectedData.spaceType, budget: collectedData.budget });
+      if (extracted.stage === 'pricing') trackEvent('lora_qualified', { spaceType: collectedData.spaceType, location: collectedData.location, budget: collectedData.budget });
       if (extracted.callBooked === true) trackEvent('lora_converted', { budget: collectedData.budget });
 
-      // Progressive save to GHL after key milestones
       if (questionsAnswered >= 1 || collectedData.email || collectedData.phone) {
         createOrUpdateGHLContact(collectedData);
       }
@@ -1033,11 +1001,8 @@ async function sendMessage() {
     const cleanText = stripMarkdown(stripDataTag(fullText));
     conversationHistory.push({ role: 'assistant', content: fullText });
     addMessage('lora', cleanText);
-
-    // Save session to localStorage
     saveSession();
 
-    // Show quick replies
     const qr = getQuickReplies(cleanText);
     if (qr.length > 0) showQuickReplies(qr);
 
@@ -1053,11 +1018,9 @@ async function sendMessage() {
 }
 
 // ─── INIT ─────────────────────────────────────────────────
-
 async function init() {
   trackEvent('lora_opened');
 
-  // Check for saved session
   const savedSession = loadSession();
   if (savedSession && savedSession.conversationHistory.length > 2) {
     conversationHistory = savedSession.conversationHistory;
@@ -1066,7 +1029,6 @@ async function init() {
     questionsAnswered = savedSession.questionsAnswered;
     updateProgress();
 
-    // Replay messages visually
     for (const msg of conversationHistory) {
       if (msg.role === 'user' && msg.content !== 'Hello') {
         addMessage('user', msg.content);
@@ -1076,7 +1038,6 @@ async function init() {
       }
     }
 
-    // Show continuation message
     addMessage('lora', "Welcome back! 👋 I've restored your previous estimate — we can carry on from where we left off. What would you like to do next?");
     showQuickReplies(['Continue estimate', 'Start fresh']);
     return;
@@ -1091,28 +1052,27 @@ async function init() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: ANTHROPIC_MODEL,
-        max_tokens: 1000,
+        max_tokens: 1200,
         system: SYSTEM_PROMPT,
         messages: conversationHistory
       })
     });
 
     const data = await response.json();
-    const fullText = data.content?.[0]?.text || "Hi! I'm Lora from JDCM. How can I help you today?";
+    const fullText = data.content?.[0]?.text || "Hi! 👋 Get a free instant estimate for your commercial fit-out in under 2 minutes. What type of space are we working with — office, shop, warehouse, or something else?";
     const cleanText = stripMarkdown(stripDataTag(fullText));
     conversationHistory.push({ role: 'assistant', content: fullText });
     addMessage('lora', cleanText);
-    const qr = getQuickReplies(cleanText);
-    if (qr.length > 0) showQuickReplies(qr);
+    showQuickReplies(['Office', 'Shop / Retail', 'Warehouse office', 'Commercial unit']);
+
   } catch(e) {
     const existing = document.getElementById('typing-indicator');
     if (existing) existing.remove();
     addMessage('lora', "Hi! 👋 Get a free instant estimate for your commercial fit-out in under 2 minutes. What type of space are we working with — office, shop, warehouse, or something else?");
-    showQuickReplies(['Office', 'Shop', 'Warehouse office', 'Commercial unit']);
+    showQuickReplies(['Office', 'Shop / Retail', 'Warehouse office', 'Commercial unit']);
   }
 }
 
-// Enter to send
 document.getElementById('user-input').addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();
@@ -1120,7 +1080,6 @@ document.getElementById('user-input').addEventListener('keydown', (e) => {
   }
 });
 
-// Auto-resize textarea
 document.getElementById('user-input').addEventListener('input', function() {
   this.style.height = 'auto';
   this.style.height = Math.min(this.scrollHeight, 100) + 'px';
