@@ -370,7 +370,6 @@ Never introduce yourself first — lead with the value and get straight to the f
 CRITICAL BEHAVIOUR RULES
 ────────────────────────────
 Ask ONE question at a time
-IMMEDIATELY after their first answer (the space type), before ANY other question, ask their name: "Ok great, and who am I speaking to?" Never skip or delay this, and use their name naturally from then on
 Remember all answers already given
 Never repeat questions already answered
 Progress forward through the flow — never restart
@@ -379,7 +378,7 @@ Always move toward booking a call
 If information is missing, politely ask for it
 Never ask irrelevant questions
 Always use commercial language — never residential terms
-Capture their NAME right after their first answer, and their EMAIL and PHONE before you reveal any estimate figures. These are mandatory.
+After giving the estimate, ALWAYS offer to email it — do not wait to be asked
 
 ────────────────────────────
 JDCM PRICING DATA — SECTION A SUPPLY & FIT (North West base rates, excl. VAT)
@@ -488,12 +487,11 @@ Apply the multiplier silently — do not mention it to the prospect. Just factor
 QUALIFICATION FLOW (ALWAYS IN THIS ORDER)
 ────────────────────────────
 1. What type of space is it? (Office / Shop / Warehouse office / Commercial unit / Other)
-Then, straight after they tell you the space type, ask their name warmly and naturally: "Ok great, and who am I speaking to?" Capture their first name, set "name" in the DATA tag, and use it naturally for the rest of the chat.
-2. Where is the site located? (Town or city, this affects pricing)
+2. Where is the site located? (Town or city — this affects pricing)
 3. What level of work? (Light refresh / Partial strip-out & refit / Full strip-out & full refit)
 4. Approximate floor area in m² — or give me the rough length and width and I will work it out
 5. Are partitions being removed, added, or both? If yes — ask for approximate m² and type (standard / acoustic / fire-rated / glazed)
-6. Ceilings and lighting — ask these as TWO separate things and record both. First: are you planning new ceilings? If yes, ask suspended grid or MF plasterboard. THEN separately, even if they have already named a ceiling type, always ask: are you having new lighting installed, such as LED panels, or keeping the existing lighting? Capture both answers together (e.g. "suspended grid, new LED lighting")
+6. Are you planning new ceilings, lighting, or both? If ceilings — ask suspended grid or MF plasterboard
 7. Will there be any door openings or alterations to existing walls or partitions?
 8. Are there any service penetrations needed — cables, pipework, ducting going through walls or ceilings? (Roughly how many?)
 9. What type of flooring is planned — or is existing flooring being kept?
@@ -507,18 +505,9 @@ Then, straight after they tell you the space type, ask their name warmly and nat
 17. Before I put the estimate together — is there anything else we have not covered? Joinery, bespoke furniture, electrics, waste removal, anything specific?
 
 ────────────────────────────
-CONTACT CAPTURE, REQUIRED BEFORE ANY ESTIMATE (HARD RULE)
-────────────────────────────
-Once all questions above are answered, you MUST collect the prospect's email and phone number BEFORE you reveal any figures. Do it naturally, framed as sending the estimate:
-"Perfect [name], I've got everything I need to put your guide estimate together. Ok, so where do you want me to send the estimate to?" (capture email)
-Then: "Great, and the best mobile number in case one of our consultants needs to reach you?" (capture phone)
-Set "email" and "phone" in the DATA tag and set "estimateEmailRequested": true.
-Do NOT present the estimate, any line item, or the total guide range until you have BOTH an email address and a phone number. If they hesitate or ask why, reassure warmly: "It is just so I can send your estimate over and have a consultant answer any questions, no spam, promise." If they still refuse after that, give only a very broad ballpark and steer them to booking a call, but always try for the details first.
-
-────────────────────────────
 ESTIMATE PRESENTATION
 ────────────────────────────
-Once all questions are answered AND you have their name, email and phone, present the estimate clearly in this format:
+Once all relevant questions are answered, present the estimate clearly in this format:
 
 "Here is your guide estimate for the [space type] in [location]:
 
@@ -543,16 +532,22 @@ This is a base rate guide — not a formal quote. When you speak with one of our
 
 [If retail/pharmacy]: As this is a retail project, out of hours working is almost certainly required. Your consultant will confirm the programme and any access restrictions on the call.
 
-I'll get a copy of this sent over to your email as well so you have it for reference."
+Would you like me to email this estimate summary to you so you have it for reference?"
 
 IMPORTANT: Always show the TOTAL GUIDE RANGE clearly. Never skip the total. Only include line items relevant to the project. Always include prelims, overheads and margin.
 
 ────────────────────────────
 EMAIL ESTIMATE FLOW
 ────────────────────────────
-You already collected their email before the estimate, so do NOT ask for it again. After presenting the estimate, simply confirm you are sending it over:
-"I'll get this estimate emailed over to you now. The team at JDCM will also follow up to discuss the details. Speaking of which..."
-estimateEmailRequested should already be true from the contact capture step.
+After presenting the estimate, ALWAYS ask:
+"Would you like me to email this estimate summary to you so you have it for reference?"
+
+Do NOT wait to be asked — offer it every time automatically.
+
+If they say YES:
+Ask for their email address if not already collected
+Set estimateEmailRequested: true in the DATA tag
+Confirm: "Done — I will make sure that gets sent over to you. The team at JDCM will also follow up to discuss the details. Speaking of which..."
 Then move straight into the booking flow
 
 ────────────────────────────
@@ -658,8 +653,6 @@ function buildTranscript() {
 let conversationHistory = [];
 let collectedData = {};
 let ghlContactId = null;
-let ghlSaving = false;
-let estimateTagged = false;
 let totalQuestions = 17;
 let questionsAnswered = 0;
 
@@ -695,8 +688,6 @@ async function getPipelineId(callBooked = false) {
 }
 
 async function createOrUpdateGHLContact(data) {
-  if (!ghlContactId && ghlSaving) return;   // a contact create is already in flight, do not create a duplicate
-  if (!ghlContactId) ghlSaving = true;
   try {
     const customFields = [
       { key: 'space_type', field_value: data.spaceType || '' },
@@ -712,7 +703,7 @@ async function createOrUpdateGHLContact(data) {
       { key: 'budget_range', field_value: data.budget || '' },
       { key: 'decision_maker', field_value: data.decisionMaker || '' },
       { key: 'call_date_time', field_value: data.callDateTime || '' },
-      { key: 'estimate_summary', field_value: data.estimateText || [
+      { key: 'estimate_summary', field_value: [
           data.spaceType ? `Space: ${data.spaceType}` : '',
           data.location ? `Location: ${data.location}` : '',
           data.locationMultiplier && data.locationMultiplier !== 1.0 ? `Location Multiplier: ${data.locationMultiplier}x` : '',
@@ -771,20 +762,9 @@ async function createOrUpdateGHLContact(data) {
     ];
 
     if (!ghlContactId) {
-      let created = await ghlRequest('/contacts/', 'POST', contactPayload);
-      // Duplicate phone/email already on another contact: adopt it and update, so the data is never lost
-      if (created && created.statusCode === 400 && created.meta && created.meta.contactId) {
-        ghlContactId = created.meta.contactId;
-        saveSession();
-        const dupPayload = { firstName: contactPayload.firstName, lastName: contactPayload.lastName, customFields, tags: contactPayload.tags };
-        if (data.email) dupPayload.email = data.email;
-        if (data.phone) dupPayload.phone = data.phone;
-        await ghlRequest(`/contacts/${ghlContactId}`, 'PUT', dupPayload);
-        created = { contact: { id: ghlContactId } };
-      }
+      const created = await ghlRequest('/contacts/', 'POST', contactPayload);
       if (created && created.contact) {
         ghlContactId = created.contact.id;
-        saveSession();
         await ghlRequest(`/contacts/${ghlContactId}/notes`, 'POST', {
           body: noteLines.join('\n'),
           userId: ''
@@ -798,7 +778,7 @@ async function createOrUpdateGHLContact(data) {
             pipelineStageId: pipelineInfo.stageId,
             status: 'open',
             contactId: ghlContactId,
-            monetaryValue: data.estimateAvg || estimateValue(data.budget)
+            monetaryValue: estimateValue(data.budget)
           });
         }
         showGHLStatus('✓ Lead saved to GHL', 'success');
@@ -812,24 +792,18 @@ async function createOrUpdateGHLContact(data) {
       if (data.email) updatePayload.email = data.email;
       if (data.phone) updatePayload.phone = data.phone;
       if (data.callBooked) updatePayload.tags = ['lora ai', 'call booked'];
-      let updated = await ghlRequest(`/contacts/${ghlContactId}`, 'PUT', updatePayload);
-      // If the phone/email now matches a different existing contact, move onto that one so nothing is lost
-      if (updated && updated.statusCode === 400 && updated.meta && updated.meta.contactId && updated.meta.contactId !== ghlContactId) {
-        ghlContactId = updated.meta.contactId;
-        saveSession();
-        await ghlRequest(`/contacts/${ghlContactId}`, 'PUT', updatePayload);
-      }
-      if (data.callBooked || data.estimateAvg) {
-        const opps = await ghlRequest(`/opportunities/search?location_id=${GHL_LOCATION}&contactId=${ghlContactId}`);
-        const opp = opps?.opportunities?.[0];
-        if (opp) {
-          const oppUpdate = {};
-          if (data.estimateAvg) oppUpdate.monetaryValue = data.estimateAvg;
-          if (data.callBooked) {
-            const pipelineInfo = await getPipelineId(true);
-            if (pipelineInfo) { oppUpdate.pipelineStageId = pipelineInfo.stageId; oppUpdate.status = 'open'; }
+      await ghlRequest(`/contacts/${ghlContactId}`, 'PUT', updatePayload);
+      if (data.callBooked) {
+        const pipelineInfo = await getPipelineId(true);
+        if (pipelineInfo) {
+          const opps = await ghlRequest(`/opportunities/search?location_id=${GHL_LOCATION}&contactId=${ghlContactId}`);
+          const opp = opps?.opportunities?.[0];
+          if (opp) {
+            await ghlRequest(`/opportunities/${opp.id}`, 'PUT', {
+              pipelineStageId: pipelineInfo.stageId,
+              status: 'open'
+            });
           }
-          if (Object.keys(oppUpdate).length) await ghlRequest(`/opportunities/${opp.id}`, 'PUT', oppUpdate);
         }
       }
       await ghlRequest(`/contacts/${ghlContactId}/notes`, 'POST', {
@@ -838,33 +812,15 @@ async function createOrUpdateGHLContact(data) {
       });
       showGHLStatus('✓ GHL updated', 'success');
     }
-    // Estimate is ready: add a dedicated tag once so the estimate-email workflow fires only now, with content present
-    if (ghlContactId && data.estimateAvg && !estimateTagged) {
-      estimateTagged = true;
-      await ghlRequest(`/contacts/${ghlContactId}/tags`, 'POST', { tags: ['estimate ready'] });
-    }
   } catch(e) {
     console.error('GHL sync error:', e);
     showGHLStatus('GHL sync pending', 'error');
-  } finally {
-    ghlSaving = false;
   }
 }
 
 function estimateValue(budget) {
   const map = { 'Under £25k': 20000, '£25k–£60k': 42000, '£60k–£120k': 90000, '£120k+': 150000 };
   return map[budget] || 0;
-}
-
-// Average (midpoint) of Lora's calculated guide range, parsed from her message text
-function parseEstimateAvg(text) {
-  // find every "£X to/– £Y" range with values in the thousands (ignores the budget bands like £25k)
-  const ranges = [...text.matchAll(/£\s*([\d,]{3,})\s*(?:[–—-]|to)\s*£\s*([\d,]{3,})/gi)]
-    .map(m => [parseInt(m[1].replace(/,/g, ''), 10), parseInt(m[2].replace(/,/g, ''), 10)])
-    .filter(r => !isNaN(r[0]) && !isNaN(r[1]) && r[1] >= 1000);
-  if (!ranges.length) return null;
-  const total = ranges.reduce((a, b) => (b[1] > a[1] ? b : a)); // total = the largest range
-  return Math.round((total[0] + total[1]) / 2);
 }
 
 function showGHLStatus(msg, type) {
@@ -958,28 +914,6 @@ function extractData(responseText) {
   try { return JSON.parse(match[1]); } catch(e) { return null; }
 }
 
-// Deterministic capture: don't trust the model to structure email/phone.
-// Scan the visitor's own messages and populate them directly.
-function backfillContact() {
-  const userMsgs = conversationHistory.filter(m => m.role === 'user').map(m => String(m.content || ''));
-  if (!collectedData.email) {
-    for (const m of userMsgs) {
-      const em = m.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-      if (em) { collectedData.email = em[0]; break; }
-    }
-  }
-  if (!collectedData.phone) {
-    // check each message on its own so we never merge the area/budget/timeline numbers into a fake phone
-    for (const m of userMsgs) {
-      const d = m.replace(/\D/g, '');
-      if (d.length >= 10 && d.length <= 13) {
-        collectedData.phone = d.startsWith('44') ? '+' + d : (d.startsWith('0') ? '+44' + d.slice(1) : '+44' + d);
-        break;
-      }
-    }
-  }
-}
-
 function stripMarkdown(text) {
   return text
     .replace(/\*\*(.*?)\*\*/g, '$1')
@@ -1057,20 +991,14 @@ async function sendMessage() {
       if (extracted.stage === 'pricing') trackEvent('lora_qualified', { spaceType: collectedData.spaceType, location: collectedData.location, budget: collectedData.budget });
       if (extracted.callBooked === true) trackEvent('lora_converted', { budget: collectedData.budget });
 
-      const estAvg = parseEstimateAvg(fullText);
-      if (estAvg) { collectedData.estimateAvg = estAvg; collectedData.estimateText = stripDataTag(fullText).trim(); }
+      if (questionsAnswered >= 1 || collectedData.email || collectedData.phone) {
+        createOrUpdateGHLContact(collectedData);
+      }
     }
 
     const cleanText = stripMarkdown(stripDataTag(fullText));
     conversationHistory.push({ role: 'assistant', content: fullText });
     addMessage('lora', cleanText);
-
-    // ALWAYS capture email/phone from the visitor's own messages (not gated on the AI's data tag),
-    // and AWAIT the save so a fast next answer can't skip it.
-    backfillContact();
-    if (questionsAnswered >= 1 || collectedData.email || collectedData.phone) {
-      await createOrUpdateGHLContact(collectedData);
-    }
     saveSession();
 
     const qr = getQuickReplies(cleanText);
