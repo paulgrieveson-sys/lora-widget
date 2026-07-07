@@ -493,7 +493,7 @@ Then, straight after they tell you the space type, ask their name warmly and nat
 3. What level of work? (Light refresh / Partial strip-out & refit / Full strip-out & full refit)
 4. Approximate floor area in m² — or give me the rough length and width and I will work it out
 5. Are partitions being removed, added, or both? If yes — ask for approximate m² and type (standard / acoustic / fire-rated / glazed)
-6. Are you planning new ceilings, lighting, or both? If ceilings — ask suspended grid or MF plasterboard
+6. Ceilings and lighting — ask these as TWO separate things and record both. First: are you planning new ceilings? If yes, ask suspended grid or MF plasterboard. THEN separately, even if they have already named a ceiling type, always ask: are you having new lighting installed, such as LED panels, or keeping the existing lighting? Capture both answers together (e.g. "suspended grid, new LED lighting")
 7. Will there be any door openings or alterations to existing walls or partitions?
 8. Are there any service penetrations needed — cables, pipework, ducting going through walls or ceilings? (Roughly how many?)
 9. What type of flooring is planned — or is existing flooring being kept?
@@ -659,6 +659,7 @@ let conversationHistory = [];
 let collectedData = {};
 let ghlContactId = null;
 let ghlSaving = false;
+let estimateTagged = false;
 let totalQuestions = 17;
 let questionsAnswered = 0;
 
@@ -711,7 +712,7 @@ async function createOrUpdateGHLContact(data) {
       { key: 'budget_range', field_value: data.budget || '' },
       { key: 'decision_maker', field_value: data.decisionMaker || '' },
       { key: 'call_date_time', field_value: data.callDateTime || '' },
-      { key: 'estimate_summary', field_value: [
+      { key: 'estimate_summary', field_value: data.estimateText || [
           data.spaceType ? `Space: ${data.spaceType}` : '',
           data.location ? `Location: ${data.location}` : '',
           data.locationMultiplier && data.locationMultiplier !== 1.0 ? `Location Multiplier: ${data.locationMultiplier}x` : '',
@@ -797,7 +798,7 @@ async function createOrUpdateGHLContact(data) {
             pipelineStageId: pipelineInfo.stageId,
             status: 'open',
             contactId: ghlContactId,
-            monetaryValue: estimateValue(data.budget)
+            monetaryValue: data.estimateAvg || estimateValue(data.budget)
           });
         }
         showGHLStatus('✓ Lead saved to GHL', 'success');
@@ -818,17 +819,17 @@ async function createOrUpdateGHLContact(data) {
         saveSession();
         await ghlRequest(`/contacts/${ghlContactId}`, 'PUT', updatePayload);
       }
-      if (data.callBooked) {
-        const pipelineInfo = await getPipelineId(true);
-        if (pipelineInfo) {
-          const opps = await ghlRequest(`/opportunities/search?location_id=${GHL_LOCATION}&contactId=${ghlContactId}`);
-          const opp = opps?.opportunities?.[0];
-          if (opp) {
-            await ghlRequest(`/opportunities/${opp.id}`, 'PUT', {
-              pipelineStageId: pipelineInfo.stageId,
-              status: 'open'
-            });
+      if (data.callBooked || data.estimateAvg) {
+        const opps = await ghlRequest(`/opportunities/search?location_id=${GHL_LOCATION}&contactId=${ghlContactId}`);
+        const opp = opps?.opportunities?.[0];
+        if (opp) {
+          const oppUpdate = {};
+          if (data.estimateAvg) oppUpdate.monetaryValue = data.estimateAvg;
+          if (data.callBooked) {
+            const pipelineInfo = await getPipelineId(true);
+            if (pipelineInfo) { oppUpdate.pipelineStageId = pipelineInfo.stageId; oppUpdate.status = 'open'; }
           }
+          if (Object.keys(oppUpdate).length) await ghlRequest(`/opportunities/${opp.id}`, 'PUT', oppUpdate);
         }
       }
       await ghlRequest(`/contacts/${ghlContactId}/notes`, 'POST', {
@@ -836,6 +837,11 @@ async function createOrUpdateGHLContact(data) {
         userId: ''
       });
       showGHLStatus('✓ GHL updated', 'success');
+    }
+    // Estimate is ready: add a dedicated tag once so the estimate-email workflow fires only now, with content present
+    if (ghlContactId && data.estimateAvg && !estimateTagged) {
+      estimateTagged = true;
+      await ghlRequest(`/contacts/${ghlContactId}/tags`, 'POST', { tags: ['estimate ready'] });
     }
   } catch(e) {
     console.error('GHL sync error:', e);
@@ -848,6 +854,16 @@ async function createOrUpdateGHLContact(data) {
 function estimateValue(budget) {
   const map = { 'Under £25k': 20000, '£25k–£60k': 42000, '£60k–£120k': 90000, '£120k+': 150000 };
   return map[budget] || 0;
+}
+
+// Average (midpoint) of Lora's calculated guide range, parsed from her message text
+function parseEstimateAvg(text) {
+  const m = text.match(/TOTAL GUIDE RANGE:\s*£\s*([\d,]+)\s*[–—-]\s*£\s*([\d,]+)/i);
+  if (!m) return null;
+  const lo = parseInt(m[1].replace(/,/g, ''), 10);
+  const hi = parseInt(m[2].replace(/,/g, ''), 10);
+  if (isNaN(lo) || isNaN(hi)) return null;
+  return Math.round((lo + hi) / 2);
 }
 
 function showGHLStatus(msg, type) {
@@ -1037,6 +1053,9 @@ async function sendMessage() {
       if (extracted.stage === 'pricing') trackEvent('lora_qualified', { spaceType: collectedData.spaceType, location: collectedData.location, budget: collectedData.budget });
       if (extracted.callBooked === true) trackEvent('lora_converted', { budget: collectedData.budget });
 
+      const estAvg = parseEstimateAvg(fullText);
+      if (estAvg) collectedData.estimateAvg = estAvg;
+      if (/TOTAL GUIDE RANGE/i.test(fullText)) collectedData.estimateText = stripDataTag(fullText).trim();
       backfillContact();
       if (questionsAnswered >= 1 || collectedData.email || collectedData.phone) {
         createOrUpdateGHLContact(collectedData);
