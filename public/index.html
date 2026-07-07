@@ -767,7 +767,17 @@ async function createOrUpdateGHLContact(data) {
     ];
 
     if (!ghlContactId) {
-      const created = await ghlRequest('/contacts/', 'POST', contactPayload);
+      let created = await ghlRequest('/contacts/', 'POST', contactPayload);
+      // Duplicate phone/email already on another contact: adopt it and update, so the data is never lost
+      if (created && created.statusCode === 400 && created.meta && created.meta.contactId) {
+        ghlContactId = created.meta.contactId;
+        saveSession();
+        const dupPayload = { firstName: contactPayload.firstName, lastName: contactPayload.lastName, customFields, tags: contactPayload.tags };
+        if (data.email) dupPayload.email = data.email;
+        if (data.phone) dupPayload.phone = data.phone;
+        await ghlRequest(`/contacts/${ghlContactId}`, 'PUT', dupPayload);
+        created = { contact: { id: ghlContactId } };
+      }
       if (created && created.contact) {
         ghlContactId = created.contact.id;
         saveSession();
@@ -798,7 +808,13 @@ async function createOrUpdateGHLContact(data) {
       if (data.email) updatePayload.email = data.email;
       if (data.phone) updatePayload.phone = data.phone;
       if (data.callBooked) updatePayload.tags = ['lora ai', 'call booked'];
-      await ghlRequest(`/contacts/${ghlContactId}`, 'PUT', updatePayload);
+      let updated = await ghlRequest(`/contacts/${ghlContactId}`, 'PUT', updatePayload);
+      // If the phone/email now matches a different existing contact, move onto that one so nothing is lost
+      if (updated && updated.statusCode === 400 && updated.meta && updated.meta.contactId && updated.meta.contactId !== ghlContactId) {
+        ghlContactId = updated.meta.contactId;
+        saveSession();
+        await ghlRequest(`/contacts/${ghlContactId}`, 'PUT', updatePayload);
+      }
       if (data.callBooked) {
         const pipelineInfo = await getPipelineId(true);
         if (pipelineInfo) {
