@@ -858,12 +858,13 @@ function estimateValue(budget) {
 
 // Average (midpoint) of Lora's calculated guide range, parsed from her message text
 function parseEstimateAvg(text) {
-  const m = text.match(/TOTAL GUIDE RANGE:\s*£\s*([\d,]+)\s*[–—-]\s*£\s*([\d,]+)/i);
-  if (!m) return null;
-  const lo = parseInt(m[1].replace(/,/g, ''), 10);
-  const hi = parseInt(m[2].replace(/,/g, ''), 10);
-  if (isNaN(lo) || isNaN(hi)) return null;
-  return Math.round((lo + hi) / 2);
+  // find every "£X to/– £Y" range with values in the thousands (ignores the budget bands like £25k)
+  const ranges = [...text.matchAll(/£\s*([\d,]{3,})\s*(?:[–—-]|to)\s*£\s*([\d,]{3,})/gi)]
+    .map(m => [parseInt(m[1].replace(/,/g, ''), 10), parseInt(m[2].replace(/,/g, ''), 10)])
+    .filter(r => !isNaN(r[0]) && !isNaN(r[1]) && r[1] >= 1000);
+  if (!ranges.length) return null;
+  const total = ranges.reduce((a, b) => (b[1] > a[1] ? b : a)); // total = the largest range
+  return Math.round((total[0] + total[1]) / 2);
 }
 
 function showGHLStatus(msg, type) {
@@ -1054,8 +1055,7 @@ async function sendMessage() {
       if (extracted.callBooked === true) trackEvent('lora_converted', { budget: collectedData.budget });
 
       const estAvg = parseEstimateAvg(fullText);
-      if (estAvg) collectedData.estimateAvg = estAvg;
-      if (/TOTAL GUIDE RANGE/i.test(fullText)) collectedData.estimateText = stripDataTag(fullText).trim();
+      if (estAvg) { collectedData.estimateAvg = estAvg; collectedData.estimateText = stripDataTag(fullText).trim(); }
       backfillContact();
       if (questionsAnswered >= 1 || collectedData.email || collectedData.phone) {
         createOrUpdateGHLContact(collectedData);
