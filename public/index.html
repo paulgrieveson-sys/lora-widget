@@ -658,6 +658,7 @@ function buildTranscript() {
 let conversationHistory = [];
 let collectedData = {};
 let ghlContactId = null;
+let ghlSaving = false;
 let totalQuestions = 17;
 let questionsAnswered = 0;
 
@@ -693,6 +694,8 @@ async function getPipelineId(callBooked = false) {
 }
 
 async function createOrUpdateGHLContact(data) {
+  if (!ghlContactId && ghlSaving) return;   // a contact create is already in flight, do not create a duplicate
+  if (!ghlContactId) ghlSaving = true;
   try {
     const customFields = [
       { key: 'space_type', field_value: data.spaceType || '' },
@@ -837,6 +840,8 @@ async function createOrUpdateGHLContact(data) {
   } catch(e) {
     console.error('GHL sync error:', e);
     showGHLStatus('GHL sync pending', 'error');
+  } finally {
+    ghlSaving = false;
   }
 }
 
@@ -936,6 +941,25 @@ function extractData(responseText) {
   try { return JSON.parse(match[1]); } catch(e) { return null; }
 }
 
+// Deterministic capture: don't trust the model to structure email/phone.
+// Scan the visitor's own messages and populate them directly.
+function backfillContact() {
+  const txt = conversationHistory.filter(m => m.role === 'user').map(m => m.content).join('  ');
+  if (!collectedData.email) {
+    const em = txt.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+    if (em) collectedData.email = em[0];
+  }
+  if (!collectedData.phone) {
+    const ph = txt.replace(/[^\d+]/g, ' ').match(/\+?\d[\d ]{8,}\d/);
+    if (ph) {
+      const clean = ph[0].replace(/\D/g, '');
+      if (clean.length >= 10) {
+        collectedData.phone = clean.startsWith('44') ? '+' + clean : (clean.startsWith('0') ? '+44' + clean.slice(1) : clean);
+      }
+    }
+  }
+}
+
 function stripMarkdown(text) {
   return text
     .replace(/\*\*(.*?)\*\*/g, '$1')
@@ -1013,6 +1037,7 @@ async function sendMessage() {
       if (extracted.stage === 'pricing') trackEvent('lora_qualified', { spaceType: collectedData.spaceType, location: collectedData.location, budget: collectedData.budget });
       if (extracted.callBooked === true) trackEvent('lora_converted', { budget: collectedData.budget });
 
+      backfillContact();
       if (questionsAnswered >= 1 || collectedData.email || collectedData.phone) {
         createOrUpdateGHLContact(collectedData);
       }
