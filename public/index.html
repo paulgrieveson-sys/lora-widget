@@ -961,17 +961,20 @@ function extractData(responseText) {
 // Deterministic capture: don't trust the model to structure email/phone.
 // Scan the visitor's own messages and populate them directly.
 function backfillContact() {
-  const txt = conversationHistory.filter(m => m.role === 'user').map(m => m.content).join('  ');
+  const userMsgs = conversationHistory.filter(m => m.role === 'user').map(m => String(m.content || ''));
   if (!collectedData.email) {
-    const em = txt.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-    if (em) collectedData.email = em[0];
+    for (const m of userMsgs) {
+      const em = m.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+      if (em) { collectedData.email = em[0]; break; }
+    }
   }
   if (!collectedData.phone) {
-    const ph = txt.replace(/[^\d+]/g, ' ').match(/\+?\d[\d ]{8,}\d/);
-    if (ph) {
-      const clean = ph[0].replace(/\D/g, '');
-      if (clean.length >= 10) {
-        collectedData.phone = clean.startsWith('44') ? '+' + clean : (clean.startsWith('0') ? '+44' + clean.slice(1) : clean);
+    // check each message on its own so we never merge the area/budget/timeline numbers into a fake phone
+    for (const m of userMsgs) {
+      const d = m.replace(/\D/g, '');
+      if (d.length >= 10 && d.length <= 13) {
+        collectedData.phone = d.startsWith('44') ? '+' + d : (d.startsWith('0') ? '+44' + d.slice(1) : '+44' + d);
+        break;
       }
     }
   }
