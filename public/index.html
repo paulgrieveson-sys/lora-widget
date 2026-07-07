@@ -1056,15 +1056,18 @@ async function sendMessage() {
 
       const estAvg = parseEstimateAvg(fullText);
       if (estAvg) { collectedData.estimateAvg = estAvg; collectedData.estimateText = stripDataTag(fullText).trim(); }
-      backfillContact();
-      if (questionsAnswered >= 1 || collectedData.email || collectedData.phone) {
-        createOrUpdateGHLContact(collectedData);
-      }
     }
 
     const cleanText = stripMarkdown(stripDataTag(fullText));
     conversationHistory.push({ role: 'assistant', content: fullText });
     addMessage('lora', cleanText);
+
+    // ALWAYS capture email/phone from the visitor's own messages (not gated on the AI's data tag),
+    // and AWAIT the save so a fast next answer can't skip it.
+    backfillContact();
+    if (questionsAnswered >= 1 || collectedData.email || collectedData.phone) {
+      await createOrUpdateGHLContact(collectedData);
+    }
     saveSession();
 
     const qr = getQuickReplies(cleanText);
