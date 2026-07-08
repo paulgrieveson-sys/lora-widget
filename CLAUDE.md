@@ -10,7 +10,7 @@ Documentation and status board for this project. **Read this FIRST. Update the s
 - **Deploy:** `cd /c/Users/p_gri/lora-widget && npx vercel --prod --yes` (must run from repo root, PowerShell — the tool does not auto-cd). Production alias: `lora-widget.vercel.app`.
 - **Vercel project:** `pauls-projects-0035b3fe/lora-widget` (`prj_0xFEWXQCILGhv1rqhuvGqMeuLDIQ`).
 - **Known issue (unfixed):** duplicate GHL contact creation — see "GHL contact creation" below. `createOrUpdateGHLContact` is called fire-and-forget and guards only on an in-memory `ghlContactId`, so rapid or concurrent syncs can each POST a new contact.
-- **Last touched (2026-07-08):** merge filter at line 1055 now drops `false`/`0`/`''` for normal fields but keeps `false` for `isRetail`/`outOfHours`/`callBooked` (`allowedEmpty`) — fixes spurious falsy values (e.g. `floorArea: 0`) counting as answered and skipping quick-reply steps. Committed `c17a104`, deployed `dpl_3Jz1a3x…`. Earlier same day: opening-message wording locked; `getQuickReplies` compacted + `isRetail` buttons simplified to Yes/No.
+- **Last touched (2026-07-08):** partitions now require a `partitionDetails` free-text follow-up before advancing — `getQuickReplies` line 899 returns `[]` when partitions is set (and not "no partitions"/"none") but `partitionDetails` is empty. Also: merge filter at line 1055 now drops `false`/`0`/`''` for normal fields but keeps `false` for `isRetail`/`outOfHours`/`callBooked` (`allowedEmpty`) — fixes spurious falsy values (e.g. `floorArea: 0`) counting as answered and skipping quick-reply steps. Committed `c17a104`, deployed `dpl_3Jz1a3x…`. Earlier same day: opening-message wording locked; `getQuickReplies` compacted + `isRetail` buttons simplified to Yes/No.
 
 ---
 

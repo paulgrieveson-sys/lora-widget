@@ -896,6 +896,7 @@ function getQuickReplies(extracted) {
   if (!d.workLevel) return ['Light refresh', 'Partial strip-out & refit', 'Full strip-out & refit'];
   if (!d.floorArea) return [];
   if (!d.partitions) return ['Remove only', 'Add only', 'Both', 'No partitions'];
+  if (!d.partitionDetails && d.partitions && !['no partitions','none'].includes(d.partitions.toLowerCase())) return [];
   if (!d.ceilings) return ['Suspended grid', 'MF plasterboard', 'Both', 'No new ceilings'];
   if (!d.doorOpenings) return ['Yes', 'No', 'Not sure yet'];
   if (!d.penetrations) return ['None', '1–5', '6–15', '15–30', '30+'];
