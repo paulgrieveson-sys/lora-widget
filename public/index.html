@@ -562,6 +562,8 @@ This is a base rate guide — not a formal quote. When you speak with one of our
 
 IMPORTANT: Always show the TOTAL GUIDE RANGE clearly. Never skip the total. Only include line items relevant to the project.
 
+Once you calculate the total guide range, populate estimateLow with the low figure, estimateHigh with the high figure, and estimateMidpoint with the midpoint (low + high divided by 2) as plain numbers with no £ sign or commas — e.g. estimateLow:45000, estimateHigh:85000, estimateMidpoint:65000.
+
 ────────────────────────────
 BOOKING FLOW — AFTER ESTIMATE
 ────────────────────────────
@@ -610,7 +612,7 @@ If calculated estimate clearly exceeds stated budget:
 IMPORTANT INSTRUCTION FOR DATA EXTRACTION
 ────────────────────────────
 After EVERY response, append a JSON block at the very end:
-<DATA>{"spaceType":"","location":"","locationMultiplier":1.0,"workLevel":"","floorArea":"","partitions":"","partitionRemovalM2":"","partitionDetails":"","ceilings":"","doorOpenings":"","penetrations":"","flooring":"","decoration":"","fitoutLevel":"","plumbing":"","isRetail":false,"outOfHours":false,"siteManagement":"","timeline":"","budget":"","decisionMaker":"","estimateEmailRequested":false,"name":"","email":"","phone":"","callBooked":false,"callDateTime":"","stage":"qualifying"}</DATA>
+<DATA>{"spaceType":"","location":"","locationMultiplier":1.0,"workLevel":"","floorArea":"","partitions":"","partitionRemovalM2":"","partitionDetails":"","ceilings":"","doorOpenings":"","penetrations":"","flooring":"","decoration":"","fitoutLevel":"","plumbing":"","isRetail":false,"outOfHours":false,"siteManagement":"","timeline":"","budget":"","decisionMaker":"","estimateLow":0,"estimateHigh":0,"estimateMidpoint":0,"estimateEmailRequested":false,"name":"","email":"","phone":"","callBooked":false,"callDateTime":"","stage":"qualifying"}</DATA>
 
 CRITICAL: Only populate a field in the DATA tag once the visitor has explicitly provided that information in their message. Never pre-fill, assume, or carry forward a value the visitor has not yet stated. If a field has not been answered, leave it as an empty string.
 
@@ -873,8 +875,9 @@ async function createOrUpdateGHLContact(data) {
 }
 
 function estimateValue(budget) {
-  const map = { 'Under £25k': 20000, '£25k–£60k': 42000, '£60k–£120k': 90000, '£120k+': 150000 };
-  return map[budget] || 0;
+  const map = { 'under £25k': 20000, '£25k–£60k': 42000, '£60k–£120k': 90000, '£120k+': 150000 };
+  if (collectedData.estimateMidpoint) return collectedData.estimateMidpoint;
+  return map[budget?.toLowerCase()] || 0;
 }
 
 function showGHLStatus(msg, type) {
