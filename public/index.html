@@ -499,7 +499,11 @@ QUALIFICATION FLOW (ALWAYS IN THIS ORDER)
 1. Where is the site located? (Town or city — this affects pricing)
 2. What level of work? (Light refresh / Partial strip-out & refit / Full strip-out & full refit)
 3. Approximate floor area in m² — or give me the rough length and width and I will work it out
-4. Are partitions being removed, added, or both? If yes — ask for approximate m² and type (standard / acoustic / fire-rated / glazed)
+4. Are partitions being removed, added, or both?
+   - If removing only or both: ask how many m² of partition are being removed
+   - If adding only or both: ask how many m² of new partition are being added, and what type (standard stud, acoustic, fire-rated, or glazed)
+   - Ask these as separate follow-up questions, one at a time
+   - Never combine m² removed and m² added into one question
 5. Are you planning new ceilings, lighting, or both? If ceilings — ask suspended grid or MF plasterboard
 6. Will there be any door openings or alterations to existing walls or partitions?
 7. Are there any service penetrations needed — cables, pipework, ducting going through walls or ceilings? (Roughly how many?)
@@ -606,7 +610,7 @@ If calculated estimate clearly exceeds stated budget:
 IMPORTANT INSTRUCTION FOR DATA EXTRACTION
 ────────────────────────────
 After EVERY response, append a JSON block at the very end:
-<DATA>{"spaceType":"","location":"","locationMultiplier":1.0,"workLevel":"","floorArea":"","partitions":"","partitionDetails":"","ceilings":"","doorOpenings":"","penetrations":"","flooring":"","decoration":"","fitoutLevel":"","plumbing":"","isRetail":false,"outOfHours":false,"siteManagement":"","timeline":"","budget":"","decisionMaker":"","estimateEmailRequested":false,"name":"","email":"","phone":"","callBooked":false,"callDateTime":"","stage":"qualifying"}</DATA>
+<DATA>{"spaceType":"","location":"","locationMultiplier":1.0,"workLevel":"","floorArea":"","partitions":"","partitionRemovalM2":"","partitionDetails":"","ceilings":"","doorOpenings":"","penetrations":"","flooring":"","decoration":"","fitoutLevel":"","plumbing":"","isRetail":false,"outOfHours":false,"siteManagement":"","timeline":"","budget":"","decisionMaker":"","estimateEmailRequested":false,"name":"","email":"","phone":"","callBooked":false,"callDateTime":"","stage":"qualifying"}</DATA>
 
 Only include fields that have been answered. locationMultiplier should reflect the region detected. stage should be: "qualifying", "capturing_contact", "pricing", "booking", or "complete".
 
@@ -896,7 +900,8 @@ function getQuickReplies(extracted) {
   if (!d.workLevel) return ['Light refresh', 'Partial strip-out & refit', 'Full strip-out & refit'];
   if (!d.floorArea) return [];
   if (!d.partitions) return ['Remove only', 'Add only', 'Both', 'No partitions'];
-  if (!d.partitionDetails && d.partitions && !['no partitions','none'].includes(d.partitions.toLowerCase())) return [];
+  if (!d.partitionDetails && d.partitions && ['add only','both'].includes(d.partitions.toLowerCase())) return [];
+  if (d.partitions && ['both','remove only'].includes(d.partitions.toLowerCase()) && !d.partitionRemovalM2) return [];
   if (!d.ceilings) return ['Suspended grid', 'MF plasterboard', 'Both', 'No new ceilings'];
   if (!d.doorOpenings) return ['Yes', 'No', 'Not sure yet'];
   if (!d.penetrations) return ['None', '1–5', '6–15', '15–30', '30+'];
