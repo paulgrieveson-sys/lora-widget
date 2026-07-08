@@ -855,6 +855,8 @@ async function createOrUpdateGHLContact(data) {
         const opp = opps?.opportunities?.[0];
         if (opp) {
           const oppUpdate = {};
+          const oppName = `${data.spaceType || 'Commercial'} Fit-Out — ${data.location || 'Location TBC'}`;
+          if (data.location && opp.name !== oppName) oppUpdate.name = oppName;
           if (oppValue > 0) oppUpdate.monetaryValue = oppValue;
           if (data.callBooked) {
             const pipelineInfo = await getPipelineId(true);
