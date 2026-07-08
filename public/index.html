@@ -364,7 +364,7 @@ You must sound friendly, professional, calm, and human — never robotic or sale
 OPENING MESSAGE — always start with exactly this:
 "Hi! 👋 Get a free instant estimate for your commercial fit-out in under 2 minutes. What type of space are we working with — office, shop, warehouse, or something else?"
 
-Never introduce yourself first — lead with the value and get straight to the first question.
+Never introduce yourself first — lead with the value and get straight to the first question. Your very first message must be EXACTLY the opening message above, word for word, nothing added, nothing removed. Do NOT ask for a name in the opening message. Do NOT say who you are. Send the opening message only, then wait for their reply.
 
 ────────────────────────────
 NAME CAPTURE — AFTER FIRST RESPONSE ONLY
@@ -881,30 +881,20 @@ function showGHLStatus(msg, type) {
 // ─── QUICK REPLIES ────────────────────────────────────────
 // State-driven — based on what data has been collected, not keyword matching
 function getQuickReplies(extracted) {
-  // If no data extracted yet, no buttons
   if (!extracted) return [];
-
   const d = collectedData;
   const stage = extracted.stage || d.stage || 'qualifying';
-
-  // Contact capture stage — no buttons, free text only
   if (stage === 'capturing_contact') return [];
-
-  // Booking stage
   if (stage === 'booking') {
     if (d.callBooked) return [];
     return ['Yes, book a call', 'Not right now'];
   }
-
-  // Pricing / complete stage — no buttons
   if (stage === 'pricing' || stage === 'complete') return [];
-
-  // Qualifying stage — offer buttons for the NEXT unanswered question
   if (!d.spaceType) return ['Office', 'Shop / Retail', 'Warehouse office', 'Commercial unit'];
-  if (!d.name) return []; // Name — free text only
+  if (!d.name) return [];
   if (!d.location) return ['Manchester', 'Bolton', 'Liverpool', 'Birmingham', 'London'];
   if (!d.workLevel) return ['Light refresh', 'Partial strip-out & refit', 'Full strip-out & refit'];
-  if (!d.floorArea) return []; // Floor area — free text only
+  if (!d.floorArea) return [];
   if (!d.partitions) return ['Remove only', 'Add only', 'Both', 'No partitions'];
   if (!d.ceilings) return ['Suspended grid', 'MF plasterboard', 'Both', 'No new ceilings'];
   if (!d.doorOpenings) return ['Yes', 'No', 'Not sure yet'];
@@ -912,13 +902,11 @@ function getQuickReplies(extracted) {
   if (!d.flooring) return ['Vinyl / LVT', 'Carpet tiles', 'Ceramic / tile', 'Keep existing'];
   if (!d.decoration) return ['Basic repaint', 'Full prep & finish', 'Feature finishes', 'No decoration'];
   if (!d.plumbing) return ['Yes', 'No', 'Not sure yet'];
-  if (d.isRetail === undefined) return ['Yes — retail / pharmacy', 'No — office / commercial'];
+  if (d.isRetail === undefined) return ['Yes', 'No'];
   if (!d.siteManagement) return ['Yes please', 'No, we have trades', 'Not sure yet'];
   if (!d.timeline) return ['Within 30 days', '30–60 days', '60–90 days', '90+ days'];
   if (!d.budget) return ['Under £25k', '£25k–£60k', '£60k–£120k', '£120k+'];
   if (!d.decisionMaker) return ['Yes, I am', 'No, need sign-off', 'Joint decision'];
-
-  // Q16 — anything else — no buttons, free text
   return [];
 }
 
@@ -1064,7 +1052,11 @@ async function sendMessage() {
     const extracted = extractData(fullText);
     if (extracted) {
       // Merge extracted data — preserve false booleans (e.g. isRetail: false is a valid answer)
-      collectedData = { ...collectedData, ...Object.fromEntries(Object.entries(extracted).filter(([,v]) => v !== '' && v !== null && v !== undefined)) };
+      const allowedEmpty = ['isRetail', 'outOfHours', 'callBooked'];
+      collectedData = { ...collectedData, ...Object.fromEntries(Object.entries(extracted).filter(([k,v]) => {
+        if (allowedEmpty.includes(k)) return v !== null && v !== undefined;
+        return v !== '' && v !== null && v !== undefined && v !== false && v !== 0;
+      })) };
       questionsAnswered = countAnswered(collectedData);
       updateProgress();
 
