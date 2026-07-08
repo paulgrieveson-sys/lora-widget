@@ -511,7 +511,7 @@ QUALIFICATION FLOW (ALWAYS IN THIS ORDER)
 9. Will the project require any decoration — repaint, full prep and finish, or feature finishes?
 10. Will plumbing be involved? If yes — how many WCs and/or tea points/kitchens?
 11. Is this a retail space — such as a shop, salon, restaurant, or food outlet? Or is it a pure commercial space like an office or warehouse? (Retail triggers out of hours discussion)
-12. Will you need full site management — we handle all trades, programme and deliveries?
+12. Will you need full site management — we will handle the management, programme, trades coordination and deliveries?
 13. When are you hoping to start? (Within 30 days / 30–60 days / 60–90 days / 90+ days)
 14. Which budget range feels closest? (Under £25k / £25k–£60k / £60k–£120k / £120k+)
 15. Are you the main decision maker on this project?
@@ -767,7 +767,7 @@ async function createOrUpdateGHLContact(data) {
     const contactPayload = {
       locationId: GHL_LOCATION,
       firstName: data.name ? data.name.split(' ')[0] : 'Website',
-      lastName: data.name ? data.name.split(' ').slice(1).join(' ') || 'Enquiry' : 'Enquiry',
+      lastName: data.name ? data.name.split(' ').slice(1).join(' ') : '',
       source: 'Lora AI Estimator',
       tags: ['lora ai', data.callBooked ? 'call booked' : 'in progress'],
       customFields
@@ -922,7 +922,7 @@ function getQuickReplies(extracted) {
   if (!d.decoration) return ['Basic repaint', 'Full prep & finish', 'Feature finishes', 'No decoration'];
   if (!d.plumbing) return ['Yes', 'No', 'Not sure yet'];
   if (d.isRetail === undefined) return ['Yes', 'No'];
-  if (!d.siteManagement) return ['Yes please', 'No, we have trades', 'Not sure yet'];
+  if (!d.siteManagement) return ['Yes please', 'No, we will manage it', 'Not sure yet'];
   if (!d.timeline) return ['Within 30 days', '30–60 days', '60–90 days', '90+ days'];
   if (!d.budget) return ['Under £25k', '£25k–£60k', '£60k–£120k', '£120k+'];
   if (!d.decisionMaker) return ['Yes, I am', 'No, need sign-off', 'Joint decision'];
