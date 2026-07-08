@@ -822,6 +822,7 @@ async function createOrUpdateGHLContact(data) {
         });
         const pipelineInfo = await getPipelineId(data.callBooked);
         if (pipelineInfo) {
+          console.log('GHL opportunity value:', estimateValue(data.budget), 'budget:', data.budget, 'midpoint:', data.estimateMidpoint, 'collectedData midpoint:', collectedData.estimateMidpoint);
           await ghlRequest('/opportunities/', 'POST', {
             pipelineId: pipelineInfo.pipelineId,
             locationId: GHL_LOCATION,
@@ -875,6 +876,7 @@ async function createOrUpdateGHLContact(data) {
 }
 
 function estimateValue(budget) {
+  console.log('estimateValue called — budget:', budget, 'collectedData.estimateMidpoint:', collectedData.estimateMidpoint);
   const map = { 'under £25k': 20000, '£25k–£60k': 42000, '£60k–£120k': 90000, '£120k+': 150000 };
   if (collectedData.estimateMidpoint) return collectedData.estimateMidpoint;
   return map[budget?.toLowerCase()] || 0;
