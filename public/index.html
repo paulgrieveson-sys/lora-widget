@@ -922,7 +922,7 @@ function getQuickReplies(extracted) {
   if (!d.decoration) return ['Basic repaint', 'Full prep & finish', 'Feature finishes', 'No decoration'];
   if (!d.plumbing) return ['Yes', 'No', 'Not sure yet'];
   if (d.isRetail === undefined) return ['Yes', 'No'];
-  if (!d.siteManagement) return ['Yes please', 'No, we will manage it', 'Not sure yet'];
+  if (!d.siteManagement) return ['Yes', 'No'];
   if (!d.timeline) return ['Within 30 days', '30–60 days', '60–90 days', '90+ days'];
   if (!d.budget) return ['Under £25k', '£25k–£60k', '£60k–£120k', '£120k+'];
   if (!d.decisionMaker) return ['Yes, I am', 'No, need sign-off', 'Joint decision'];
