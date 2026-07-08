@@ -850,16 +850,23 @@ async function createOrUpdateGHLContact(data) {
 
       await ghlRequest(`/contacts/${ghlContactId}`, 'PUT', updatePayload);
 
-      if (data.callBooked) {
-        const pipelineInfo = await getPipelineId(true);
-        if (pipelineInfo) {
-          const opps = await ghlRequest(`/opportunities/search?location_id=${GHL_LOCATION}&contactId=${ghlContactId}`);
-          const opp = opps?.opportunities?.[0];
-          if (opp) {
-            await ghlRequest(`/opportunities/${opp.id}`, 'PUT', {
-              pipelineStageId: pipelineInfo.stageId,
-              status: 'open'
-            });
+      const oppValue = estimateValue(data.budget);
+      if (data.callBooked || oppValue > 0) {
+        const opps = await ghlRequest(`/opportunities/search?location_id=${GHL_LOCATION}&contactId=${ghlContactId}`);
+        const opp = opps?.opportunities?.[0];
+        if (opp) {
+          const oppUpdate = {};
+          if (oppValue > 0) oppUpdate.monetaryValue = oppValue;
+          if (data.callBooked) {
+            const pipelineInfo = await getPipelineId(true);
+            if (pipelineInfo) {
+              oppUpdate.pipelineStageId = pipelineInfo.stageId;
+              oppUpdate.status = 'open';
+            }
+          }
+          if (Object.keys(oppUpdate).length) {
+            console.log('GHL opportunity UPDATE value:', oppValue, 'oppId:', opp.id, 'payload:', oppUpdate);
+            await ghlRequest(`/opportunities/${opp.id}`, 'PUT', oppUpdate);
           }
         }
       }
