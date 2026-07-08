@@ -852,7 +852,7 @@ async function createOrUpdateGHLContact(data) {
 
       const oppValue = estimateValue(data.budget);
       if (data.callBooked || oppValue > 0) {
-        const opps = await ghlRequest(`/opportunities/search?location_id=${GHL_LOCATION}&contactId=${ghlContactId}`);
+        const opps = await ghlRequest(`/opportunities/search?location_id=${GHL_LOCATION}&contact_id=${ghlContactId}`);
         const opp = opps?.opportunities?.[0];
         if (opp) {
           const oppUpdate = {};
