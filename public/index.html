@@ -750,6 +750,9 @@ async function createOrUpdateGHLContact(data) {
       { key: 'budget_range', field_value: data.budget || '' },
       { key: 'decision_maker', field_value: data.decisionMaker || '' },
       { key: 'call_date_time', field_value: data.callDateTime || '' },
+      { key: 'location', field_value: data.location || '' },
+      { key: 'flooring', field_value: data.flooring || '' },
+      { key: 'estimate_range', field_value: (data.estimateLow && data.estimateHigh) ? `£${Number(data.estimateLow).toLocaleString('en-GB')} – £${Number(data.estimateHigh).toLocaleString('en-GB')}` : '' },
       { key: 'estimate_summary', field_value: [
           data.spaceType ? `Space: ${data.spaceType}` : '',
           data.location ? `Location: ${data.location}` : '',
