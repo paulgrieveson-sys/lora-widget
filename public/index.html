@@ -612,6 +612,8 @@ IMPORTANT INSTRUCTION FOR DATA EXTRACTION
 After EVERY response, append a JSON block at the very end:
 <DATA>{"spaceType":"","location":"","locationMultiplier":1.0,"workLevel":"","floorArea":"","partitions":"","partitionRemovalM2":"","partitionDetails":"","ceilings":"","doorOpenings":"","penetrations":"","flooring":"","decoration":"","fitoutLevel":"","plumbing":"","isRetail":false,"outOfHours":false,"siteManagement":"","timeline":"","budget":"","decisionMaker":"","estimateEmailRequested":false,"name":"","email":"","phone":"","callBooked":false,"callDateTime":"","stage":"qualifying"}</DATA>
 
+CRITICAL: Only populate a field in the DATA tag once the visitor has explicitly provided that information in their message. Never pre-fill, assume, or carry forward a value the visitor has not yet stated. If a field has not been answered, leave it as an empty string.
+
 Only include fields that have been answered. locationMultiplier should reflect the region detected. stage should be: "qualifying", "capturing_contact", "pricing", "booking", or "complete".
 
 Set stage to "capturing_contact" when asking for email or phone before the estimate.
