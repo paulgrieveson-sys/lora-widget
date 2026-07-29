@@ -399,6 +399,7 @@ Progress forward through the flow — never restart
 Never give exact prices — only broad guide ranges calculated from the data below
 Always move toward booking a call
 If information is missing, politely ask for it
+If the visitor does not know an answer, or says it is on their plans, say "No problem — we will confirm that on the call" and MOVE ON to the next question. Never ask the same question twice, and never press for a number they cannot give.
 Never ask irrelevant questions
 Always use commercial language — never residential terms
 Do NOT offer to email the estimate at the end — you will have already collected email before delivering it
@@ -511,26 +512,21 @@ QUALIFICATION FLOW (ALWAYS IN THIS ORDER)
 ────────────────────────────
 0. Opening → space type question
 0b. After first answer → ask for name naturally ("Great — and who am I speaking with?")
+
+SET EXPECTATIONS — say this ONCE, after you have their name and it is clearly a real project:
+"To give you a realistic guide rather than a wild guess, I will run through about 8 quick questions — takes about two minutes, and the more you can tell me the tighter the number. Sound good?"
+
+Then ask ONE question at a time, in this order:
 1. Where is the site located? (Town or city — this affects pricing)
-2. What level of work? (Light refresh / Partial strip-out & refit / Full strip-out & full refit)
+2. What level of work — a light refresh, a partial strip-out and refit, or a full strip-out and refit? And to what finish (for example shell to trade-ready)?
 3. Approximate floor area in m² — or give me the rough length and width and I will work it out
-4. Are partitions being removed, added, or both?
-   - If removing only or both: ask how many m² of partition are being removed
-   - If adding only or both: ask how many m² of new partition are being added, and what type (standard stud, acoustic, fire-rated, or glazed)
-   - Ask these as separate follow-up questions, one at a time
-   - Never combine m² removed and m² added into one question
-5. Are you planning new ceilings, lighting, or both? If ceilings — ask suspended grid or MF plasterboard
-6. Will there be any door openings or alterations to existing walls or partitions?
-7. Are there any service penetrations needed — cables, pipework, ducting going through walls or ceilings? (Roughly how many?)
-8. What type of flooring is planned — or is existing flooring being kept?
-9. Will the project require any decoration — repaint, full prep and finish, or feature finishes?
-10. Will plumbing be involved? If yes — how many WCs and/or tea points/kitchens?
-11. Is this a retail space — such as a shop, salon, restaurant, or food outlet? Or is it a pure commercial space like an office or warehouse? (Retail triggers out of hours discussion)
-12. Will you need full site management — we will handle the management, programme, trades coordination and deliveries?
-13. When are you hoping to start? (Within 30 days / 30–60 days / 60–90 days / 90+ days)
-14. Which budget range feels closest? (Under £25k / £25k–£60k / £60k–£120k / £120k+)
-15. Are you the main decision maker on this project?
-16. Before I put the estimate together — is there anything else we have not covered? Joinery, bespoke furniture, electrics, waste removal, anything specific?
+4. Are partitions being removed, added, or both? Roughly is fine — the exact metres we confirm on the call.
+5. Are you planning new ceilings, lighting, or both? If ceilings — suspended grid or MF plasterboard?
+6. Will plumbing be involved? If yes — roughly how many WCs and/or tea points or kitchens?
+7. Is this a retail space (shop, salon, restaurant, food outlet) or a pure commercial space (office, warehouse)? (Retail triggers the out-of-hours discussion.)
+8. When are you hoping to start? (Within 30 days / 30–60 days / 60–90 days / 90+ days)
+
+Everything else — exact partition metres, door openings, service penetrations, flooring type, decoration level, site management, budget, decision maker, joinery, waste removal, electrics — is CONFIRMED ON THE CALL OR SITE VISIT, not in this chat. Do NOT ask about any of it here. Your job is a realistic guide range, their contact details, and a booked call — the consultant nails the detail.
 
 ────────────────────────────
 PRE-ESTIMATE CONTACT CAPTURE — FALLBACK (you should already have these)
@@ -683,7 +679,7 @@ function buildTranscript() {
 let conversationHistory = [];
 let collectedData = {};
 let ghlContactId = null;
-let totalQuestions = 17;
+let totalQuestions = 10;
 let questionsAnswered = 0;
 
 // ─── VALIDATION HELPERS ───────────────────────────────────
@@ -927,19 +923,10 @@ function getQuickReplies(extracted) {
   if (!d.workLevel) return ['Light refresh', 'Partial strip-out & refit', 'Full strip-out & refit'];
   if (!d.floorArea) return [];
   if (!d.partitions) return ['Remove only', 'Add only', 'Both', 'No partitions'];
-  if (!d.partitionDetails && d.partitions && ['add only','both'].includes(d.partitions.toLowerCase())) return [];
-  if (d.partitions && ['both','remove only'].includes(d.partitions.toLowerCase()) && !d.partitionRemovalM2) return [];
   if (!d.ceilings) return ['Suspended grid', 'MF plasterboard', 'Both', 'No new ceilings'];
-  if (!d.doorOpenings) return ['Yes', 'No', 'Not sure yet'];
-  if (!d.penetrations) return ['None', '1–5', '6–15', '15–30', '30+'];
-  if (!d.flooring) return ['Vinyl / LVT', 'Carpet tiles', 'Ceramic / tile', 'Keep existing'];
-  if (!d.decoration) return ['Basic repaint', 'Full prep & finish', 'Feature finishes', 'No decoration'];
   if (!d.plumbing) return ['Yes', 'No', 'Not sure yet'];
   if (d.isRetail === undefined) return ['Yes', 'No'];
-  if (!d.siteManagement) return ['Yes', 'No'];
   if (!d.timeline) return ['Within 30 days', '30–60 days', '60–90 days', '90+ days'];
-  if (!d.budget) return ['Under £25k', '£25k–£60k', '£60k–£120k', '£120k+'];
-  if (!d.decisionMaker) return ['Yes, I am', 'No, need sign-off', 'Joint decision'];
   return [];
 }
 
@@ -1020,8 +1007,7 @@ function stripDataTag(text) {
 
 function countAnswered(data) {
   const fields = ['spaceType','location','workLevel','floorArea','partitions','ceilings',
-    'doorOpenings','penetrations','flooring','decoration','plumbing','siteManagement',
-    'timeline','budget','decisionMaker','fitoutLevel','isRetail'];
+    'plumbing','isRetail','timeline','fitoutLevel'];
   return fields.filter(f => data[f] !== undefined && data[f] !== '' && data[f] !== false).length;
 }
 
