@@ -685,10 +685,7 @@ let questionsAnswered = 0;
 
 // ─── VALIDATION HELPERS ───────────────────────────────────
 
-function sanitisePhone(raw) {
-  if (!raw) return undefined;
-  // Strip everything except digits and leading +
-  const digits = raw.replace(/[^\d+]/g, '');
+function normaliseUKPhone(digits) {
   // UK mobile: 07xxx (11 digits)
   if (/^07\d{9}$/.test(digits)) return digits;
   // UK landline: 01xxx / 02xxx / 03xxx (11 digits)
@@ -698,6 +695,25 @@ function sanitisePhone(raw) {
   // 10 digits starting with 7 — prepend 0
   if (/^7\d{9}$/.test(digits)) return '0' + digits;
   // Anything else — reject
+  return undefined;
+}
+
+function sanitisePhone(raw) {
+  if (!raw) return undefined;
+  const text = String(raw);
+  // First try the whole string, as before — covers already-clean values
+  const whole = normaliseUKPhone(text.replace(/[^\d+]/g, ''));
+  if (whole) return whole;
+  // Otherwise pull phone-shaped runs out of the free text and take the first
+  // that validates. Stripping non-digits across the WHOLE string merged a
+  // trailing word's digit into the number ("01614428740 option 1" became the
+  // 12-digit 016144287401 and was rejected). Lost Alison Dermott's landline,
+  // 11 Sep 2026, on the only lead that had booked a call.
+  const candidates = text.match(/\+?\d[\d\s\-()]{7,}\d/g) || [];
+  for (const c of candidates) {
+    const v = normaliseUKPhone(c.replace(/[^\d+]/g, ''));
+    if (v) return v;
+  }
   return undefined;
 }
 
