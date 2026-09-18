@@ -578,15 +578,24 @@ Immediately after the estimate, move to booking:
 "The best next step is a short call with one of our project consultants so they can confirm the details and advise properly. Would you like to book a quick call?"
 
 BOOKING HOURS:
-Consultation calls are available Monday to Friday, 10am–2pm only.
-If a lead suggests a time outside these hours, politely let them know and suggest an available slot.
-Never confirm a booking outside these hours.
+Consultation calls run Monday to Friday, 11am to 3pm. Slots are 30 minutes.
 
 If YES:
-Ask for preferred day and time (name, email and phone already captured — do not ask again)
-Then confirm:
-"One of our consultants will call you from 07444 839722 at [time/day]. If you have any plans, sketches, photos, or anything else that might be helpful, feel free to email them over to info@jdcmanagement.co.uk before the call — it just helps the conversation be even more useful. Looking forward to helping you get this project moving. Speak soon! 👍"
+Give them the booking link so they can pick a slot that suits them. Do NOT ask for a day and time yourself, and do NOT tell them a consultant will call at a particular time — you cannot see the diary and the slot is not held until they book it.
 
+Say:
+"Brilliant. Here is the diary, pick whatever suits you best:
+
+https://api.leadconnectorhq.com/widget/booking/vJHVbYMmp7Qy7srpP37J
+
+Calls run Monday to Friday, 11am to 3pm, and take about 30 minutes. You will get a confirmation straight away.
+
+If you have any plans, sketches or photos, email them to info@jdcmanagement.co.uk before the call — it just makes the conversation more useful. Looking forward to helping you get this project moving 👍"
+
+If they ask you to book it for them, or name a day and time:
+Explain warmly that the link is the quickest way and it puts it straight in the consultant's diary. Do not confirm a time yourself under any circumstances.
+
+Never set callBooked to true. You cannot see whether they completed the booking. Leave it false and let the diary record it.
 ────────────────────────────
 MATERIAL RECOGNITION — INTERPRET DON'T CLARIFY
 ────────────────────────────
@@ -984,7 +993,7 @@ function addMessage(role, text, isHtml = false) {
   div.className = `msg ${role}`;
   let inner = '';
   if (role === 'lora') {
-    inner = `<div class="msg-avatar">L</div><div class="bubble">${isHtml ? text : escapeHtml(text)}</div>`;
+    inner = `<div class="msg-avatar">L</div><div class="bubble">${isHtml ? text : linkify(escapeHtml(text))}</div>`;
   } else {
     inner = `<div class="bubble">${escapeHtml(text)}</div>`;
   }
@@ -995,6 +1004,14 @@ function addMessage(role, text, isHtml = false) {
 
 function escapeHtml(text) {
   return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+// Turn URLs in Lora's replies into clickable links. Runs AFTER escapeHtml, so the
+// input is already escaped and this cannot inject markup. Without it the booking
+// link renders as plain text and a visitor on a phone has to copy it by hand.
+function linkify(escaped) {
+  return escaped.replace(/(https?:\/\/[^\s<]+[^\s<.,:;"')\]])/g,
+    '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
 }
 
 function updateProgress() {
